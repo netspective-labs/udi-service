@@ -1,0 +1,4 @@
+FROM graphile/postgraphile:4.14.0
+LABEL description="PostGraphile for Information Governance Suite (IGS) Entity Attribute Graph Specification (EAGS)."
+
+RUN yarn add @graphile-contrib/pg-simplify-inflector postgraphile-plugin-connection-filter @graphile-contrib/pg-order-by-related --production=true --no-progress

@@ -12,7 +12,8 @@ RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
 # Install postgis
-RUN apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
+RUN apt-get update \
+      && apt-cache showpkg postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
       && apt-get install -y --no-install-recommends \
            postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR \
            postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR-scripts \
@@ -67,7 +68,8 @@ RUN cd /tmp/plv8 && \
     make install
 
 # Install plpgsql_check
-RUN apt-get install -y gcc libicu-dev postgresql-server-dev-$PG_MAJOR \
+RUN apt-get update \
+    && apt-get install -y gcc libicu-dev postgresql-server-dev-$PG_MAJOR \
     && cd /tmp \
     && git clone https://github.com/okbob/plpgsql_check.git \
     && cd plpgsql_check \
@@ -146,7 +148,8 @@ RUN cd /tmp \
 RUN apt-get install -y pgxnclient \
     && pgxn install safeupdate
 
-# Install pg_tle
+#Install pg_tle
+RUN apt-get update
 RUN apt-get install flex libkrb5-dev -y
 RUN cd /tmp
 RUN git clone https://github.com/aws/pg_tle.git /tmp/pg_tle \
@@ -154,29 +157,31 @@ RUN git clone https://github.com/aws/pg_tle.git /tmp/pg_tle \
     && make \
     && make install
 
-# Install pgml
-RUN apt-get install -y --no-install-recommends \
+#Install pgml
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
        build-essential \
        git \
-       postgresql-server-dev-$PG_MAJOR  \
+       postgresql-server-dev-15 \
     && rm -rf /var/lib/apt/lists/*
 RUN cd /tmp
 RUN git clone https://github.com/postgresml/postgresml.git /tmp/pgml \
      && cd /tmp/pgml \
 RUN pip3 install -r pgml-extension/requirements.txt
 
-# Install pg_stat_kcache
+#Install pg_stat_kcache
 RUN cd /tmp
 RUN git clone https://github.com/powa-team/pg_stat_kcache.git /tmp/pg_stat_kcache \
     && cd /tmp/pg_stat_kcache \
     && make \
     && make install
 
-# Install mysql_fdw
-RUN apt-get install -y --no-install-recommends \
+#Install mysql_fdw
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
        build-essential \
        git \
-       postgresql-server-dev-$PG_MAJOR \
+       postgresql-server-dev-${PG_MAJOR} \
        mariadb-client \
        libmariadb-dev-compat \
     && rm -rf /var/lib/apt/lists/*

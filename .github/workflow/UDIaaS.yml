@@ -1,0 +1,23 @@
+on:
+  workflow_dispatch:
+
+name: PostgreSQL UDIaaS
+
+jobs:
+  ghcr:
+    name: PostgreSQL UDIaaS docker build and push to ghcr.io
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Docker Build
+        env:
+          OWNER_NAME: 'udi-service'
+          IMAGE_NAME: 'udi-service/udiaas:15.4'
+          GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo $GHCR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+          docker build -t ghcr.io/${{ env.OWNER_NAME }}/${{ env.IMAGE_NAME }} \
+          --no-cache -f ./Dockerfile.UDIaaS  .
+          docker push ghcr.io/${{ env.OWNER_NAME }}/${{ env.IMAGE_NAME }}

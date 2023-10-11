@@ -30,6 +30,8 @@ services:
       - POSTGRES_DATABASE=${POSTGRES_DATABASE}
     networks:
       - network
+    volumes:
+      - udiaas-data:/var/lib/postgresql
     ports:
       - '5432:5432'
 
@@ -82,3 +84,7 @@ networks:
   network:
     external:
       name: udiaas
+  
+volumes:
+  udiaas-data:
+    name: udiaas-postgres_data

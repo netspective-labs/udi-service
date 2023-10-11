@@ -29,6 +29,12 @@ Keycloak UDIaaS GitHub Action - Dockerfile.keycloak
 PostGraphile UDIaaS GitHub Action - Dockerfile.postGraphile
 
 TODO.. (other docker images if required)
+
+pg_graphql
+
+pg_later
+
+...
 ```
 
 ## Prepare UDIaaS software installation

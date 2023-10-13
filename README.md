@@ -2,7 +2,7 @@
 
 Code and governance for deploying Universal Data Infrastructure as a Service (UDIaaS). UDIaaS is a batteries included pre-configured PostgreSQL ecosystem with a highly opinionated Infrastructure as Code (IaC) deployment model for traditional 3-tier business applications. UDIaaS is ideal for modern web front-ends that need limited or zero middleware for data services and rely almost entirely on PostgreSQL for their backend (including heavy use of stored procedures, FDWs, polyglot languages, and other native PostgreSQL capabilities).
 
-This is a [chezmoi](https://www.chezmoi.io/) and [asdf](https://asdf-vm.com/)-based setup for UDIaaS deployment on a Linux-like operating systems. 
+This is a [chezmoi](https://www.chezmoi.io/) and [asdf](https://asdf-vm.com/) based setup for UDIaaS deployment on a Linux-like operating systems. 
 
 ## Setup the operating system (WSL2 Method)
 
@@ -19,7 +19,7 @@ $ wsl --unregister Ubuntu-22.04
 $ wsl --install -d Ubuntu-22.04
 ```
 
-If you're using a Debian-based distro you should be able to run this repo in any Debian user account. It will probably work with any Linux-like OS but has only been tested on Debian-based distros (e.g. Kali Linux and Ubuntu 22.04 LTS).
+If you're using a Debian-based distro you should be able to run this repo in any Debian user account. It will probably work with any Linux-like OS but has only been tested on Debian-based distros (e.g. Ubuntu 22.04 LTS and Kali Linux).
 
 ## One-time setup
 
@@ -28,13 +28,13 @@ Bootstrap our preferred Ubuntu environment with required utilities (be sure to u
 ```bash
 cd $HOME && sudo apt-get -qq update && sudo apt-get install curl -y -qq && \
    sudo apt-get -qq update && sudo apt-get -qq install -y lsb-release && \
-   curl -fsSL https://raw.githubusercontent.com/RinshadKAsharaf/udi-service/master/bootstrap-admin-ubuntu.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/udi-service/udi-service/master/bootstrap-admin-ubuntu.sh | bash
 ```
 
 Once the admin (`sudo`) part of the boostrap is complete, continue with non-admin:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/RinshadKAsharaf/udi-service/master/bootstrap-common.sh | bash
+curl -fsSL https://raw.githubusercontent.com/udi-service/udi-service/master/bootstrap-common.sh | bash
 ```
 
 We use [chezmoi](https://www.chezmoi.io/) with templates to manage our dotfiles across multiple diverse machines, securely. The `bootstrap-*` script has already created the `chezmoi` config file which you should personalize _before installing_ `chezmoi`. See [chezmoi.toml Example](dot_config/chezmoi/chezmoi.toml.example) to help understand the variables that can be set and used across chezmoi templates.
@@ -46,7 +46,7 @@ vim.tiny ~/.config/chezmoi/chezmoi.toml
 Install `chezmoi` and generate configuration files based on values in UDIaaS `chezmoi` templates:
 
 ```bash
-sh -c "$(curl -fsSL git.io/chezmoi)" -- init --apply RinshadKAsharaf/udi-service
+sh -c "$(curl -fsSL git.io/chezmoi)" -- init --apply udi-service/udi-service
 ```
 
 We prefer `Fish` as the default shell and `Oh My Posh` as the CLI prompts theme manager. These are configured automatically by `chezmoi`'s first-time configuration. You should switch your user's default shell to `Fish` by running:
@@ -70,7 +70,7 @@ exit
 
 ## Maintenance
 
-Regularly run, or when `github.com/RinshadKAsharaf/udi-service` repo is updated:
+Regularly run, or when `github.com/udi-service/udi-service` repo is updated:
 
 ```bash
 chez upgrade

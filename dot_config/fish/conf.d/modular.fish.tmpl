@@ -1,0 +1,23 @@
+# This file is managed by chezmoi in {{ .chezmoi.sourceFile }}. DO NOT EDIT directly.
+# To modify, use `chezmoi edit ~/.config/fish/conf.d/modular.fish --apply`. 
+
+# Mojo is installed manually through Modular CLI
+# go to https://developer.modular.com/ and get MODULAR_AUTH value
+# $ curl https://get.modular.com | MODULAR_AUTH=XYZ sh -
+# $ modular install mojo
+
+{{- if (index . "modular_com") }}
+{{-     if (index . "modular_com" "env") }}
+{{-         if (index . "modular_com" "env" "MODULAR_AUTH") }}
+export MODULAR_AUTH="{{ .modular_com.env.MODULAR_AUTH }}"
+export MODULAR_HOME="$HOME/.modular"
+fish_add_path "$MODULAR_HOME/pkg/packages.modular.com_mojo/bin"
+{{-         else}}
+# '.modular_com.env.MODULAR_AUTH' not found in chezmoi.toml (see dot_config/chezmoi/chezmoi.toml.example)
+{{-         end}}
+{{-     else}}
+# '.modular_com.env' not found in chezmoi.toml (see dot_config/chezmoi/chezmoi.toml.example)
+{{-     end}}
+{{- else}}
+# '.modular_com' not found in chezmoi.toml (see dot_config/chezmoi/chezmoi.toml.example)
+{{- end}}

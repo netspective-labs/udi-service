@@ -25,9 +25,9 @@ services:
     image: 'ghcr.io/udi-service/udiaas:15.4'
     restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+      - POSTGRES_USER="{{ postgres_user }}"
+      - POSTGRES_PASSWORD="{{ postgres_password }}"
+      - POSTGRES_DATABASE="{{ postgres_database }}"
     networks:
       - network
     volumes:

@@ -10,8 +10,14 @@
 #---------------------------------------------------------------------------------
 [data]
     [data.git.user]
-        name = "Shahid N. Shah"
+        name = "UDIaaS user"
         email = "user@email.com"
+    
+    # add [data.postgres.*] for creating the ansible variable file
+    [data.postgres]
+        user = "postgres"
+        password = "secret123"
+        database = "udiaas"
 
     # add [data.git.credential.helpers.static.GITHUB] if you want the following in .gitconfig:
     # [credential "https://github.com"]

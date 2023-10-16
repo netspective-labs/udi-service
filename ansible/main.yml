@@ -1,0 +1,12 @@
+---
+- name: Include ansible variables
+  include_vars:
+    file: {{ ansible_env.HOME }}/.ansible/vars/ansible-variables.yml
+
+- name: Deploy UDIaaS with Docker Compose
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - docker-installation
+    - udiaas-deployment
+

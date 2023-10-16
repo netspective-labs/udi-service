@@ -59,9 +59,10 @@ exit
 ## TODO (Roadmap)
 
 - Ansible
-- Docker desktop integration
+- Docker desktop (WSL2 integration)
 - Docker containers
-- GHCR
+- Prepare GitHub Actions for custom images
+- GHCR container image registry
 
 ## Secrets Management
 

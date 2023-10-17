@@ -17,6 +17,10 @@ fi
 # we expect the latest Fish shell so be sure to use package archive provided by the fish project not older Debian packages;
 sudo add-apt-repository ppa:fish-shell/release-3
 
+# Include the official ansible project’s PPA
+sudo apt-add-repository ppa:ansible/ansible
+
+
 # get the latest packages meta data
 sudo apt-get -qq update
 
@@ -31,6 +35,9 @@ sudo apt-get -y -qq install build-essential zlib1g-dev libncurses5-dev libgdbm-d
 
 # install common diagramming as code tools
 sudo apt-get -y -qq install graphviz
+
+# install ansible automation tool
+sudo apt-get -y -qq install ansible
 
 # install git-extras in bootstrap instead of chezmoi since sudo is required for global setup;
 # right now chezmoi `run_once_install-packages.sh.tmpl` doesn't require sudo but if it does later,

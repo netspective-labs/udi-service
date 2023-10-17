@@ -191,6 +191,17 @@ RUN git clone https://github.com/EnterpriseDB/mysql_fdw.git /tmp/mysql_fdw \
     && make USE_PGXS=1 \
     && make USE_PGXS=1 install
 
+#Install pg_graphql
+RUN apt-get update -y
+RUN apt-get install git curl libssl-dev pkg-config clang gcc make postgresql-server-dev-${PG_MAJOR} -y
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+RUN git clone https://github.com/supabase/pg_graphql.git /tmp/pg_graphql
+WORKDIR /tmp/pg_graphql
+RUN ~/.cargo/bin/cargo install  --locked cargo-pgrx@0.10.2
+ENV PGRX_HOME=/tmp/pg_graphql
+RUN echo "[configs]\npg15='/usr/bin/pg_config'" > config.toml
+RUN ~/.cargo/bin/cargo pgrx install --release
+
 # Cleanup
 RUN rm -rf /tmp/ && \
     apt-get clean && \

@@ -49,10 +49,9 @@ Install `chezmoi` and generate configuration files based on values in UDIaaS `ch
 sh -c "$(curl -fsSL git.io/chezmoi)" -- init --apply udi-service/udi-service
 ```
 
-We prefer `Fish` as the default shell and `Oh My Posh` as the CLI prompts theme manager. These are configured automatically by `chezmoi`'s first-time configuration. You should switch your user's default shell to `Fish` by running:
+Exit the current session by running below command and this should switch your default shell to `Fish` upon your next login:
 
 ```bash
-chsh -s /usr/bin/fish
 exit
 ```
 

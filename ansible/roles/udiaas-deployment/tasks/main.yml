@@ -1,7 +1,0 @@
----
-- name: Ensure the UDIaaS containers are running
-  docker_compose:
-    project_src: ../../../../docker/docker-compose.yml
-    state: present
-  become: yes
-

@@ -1,4 +1,9 @@
+# This file is managed by chezmoi in {{ .chezmoi.sourceFile }}. DO NOT EDIT directly.
+# To modify, use `chezmoi edit ~/.config/ansible/ansible-variables.yml --apply`.
+
+{{- if (index . "sudo_user") }}
+{{- if (index . "sudo_user" "password") }}
 ---
-postgres_user: {{ .postgres.user | quote }}
-postgres_password: {{ .postgres.password | quote }}
-postgres_database: {{ .postgres.database | quote }}
+sudo_password: {{ .sudo_user.password | quote }}
+{{- end}}
+{{- end}}

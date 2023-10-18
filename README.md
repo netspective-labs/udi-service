@@ -49,17 +49,29 @@ Install `chezmoi` and generate configuration files based on values in UDIaaS `ch
 sh -c "$(curl -fsSL git.io/chezmoi)" -- init --apply udi-service/udi-service
 ```
 
+This now installs the entire Universal Data Infrastructure (UDI) Docker containers using Ansible
+
+
 Exit the current session by running below command and this should switch your default shell to `Fish` upon your next login:
 
 ```bash
 exit
 ```
 
+We can then use docker ps to list the UDIaaS Docker containers
+
+```bash
+docker ps
+```
+
+`pgpass` utility can be used to login to the UDIaaS database
+
+```bash
+fish -c "psql $(pgpass psql-fmt --conn-id='UDIAAS_DB')"
+```
+
 ## TODO (Roadmap)
 
-- Ansible
-- Docker desktop (WSL2 integration)
-- Docker containers
 - Prepare GitHub Actions for custom images
 - GHCR container image registry
 

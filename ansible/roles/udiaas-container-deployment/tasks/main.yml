@@ -1,0 +1,19 @@
+---
+- name: Include ansible variables
+  include_vars:
+    file: "{{ ansible_env.HOME }}/.config/ansible/ansible-variables.yml"
+
+- name: Create Docker Network 'udiaas'
+  docker_network:
+    name: udiaas
+  become: yes
+  vars:
+    ansible_become_password: "{{ sudo_password }}"
+
+- name: Deploy the UDIaaS containers
+  command: docker-compose --env-file "{{ ansible_env.HOME }}/.config/docker/docker.env" up -d
+  args:
+    chdir: "{{ ansible_env.HOME }}/docker"
+  become: yes
+  vars:
+    ansible_become_password: "{{ sudo_password }}"

@@ -1,0 +1,20 @@
+---
+- name: Include ansible variables
+  include_vars:
+    file: "{{ ansible_env.HOME }}/.config/ansible/ansible-variables.yml"
+
+- name: Install Docker and Docker Compose
+  apt:
+    name:
+      - docker.io
+      - docker-compose
+    update_cache: yes
+  become: yes
+  vars:
+    ansible_become_password: "{{ sudo_password }}"
+
+- name: Add the current user to the docker group
+  shell: usermod -aG docker "{{ ansible_env.USER }}"
+  become: yes
+  vars:
+    ansible_become_password: "{{ sudo_password }}"

@@ -90,3 +90,7 @@ printf "Inspect ${YELLOW}$NLH_ASDF_LOG${NC}: ${RED}`grep error $NLH_ASDF_LOG | w
 
 # Set Fish as the default shell
 chsh -s /usr/bin/fish
+
+# Execute ansible playbooks for UDIaaS deployment
+cd $HOME
+ansible-playbook ansible/main.yml

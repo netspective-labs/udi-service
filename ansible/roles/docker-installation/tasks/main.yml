@@ -1,8 +1,0 @@
----
-- name: Install Docker and Docker Compose
-  apt:
-    name:
-      - docker.io
-      - docker-compose
-    update_cache: yes
-  become: yes

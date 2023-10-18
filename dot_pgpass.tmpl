@@ -30,9 +30,11 @@
 
 # hostname:port:database:username:password
 # 192.168.2.x:5432:database:postgres:sup3rSecure!
-
-# { id: "MY_SPECIAL_DB", description: "Human-friendly description of database", boundary: "Network" }
-192.168.2.24:5432:pgDB_name:pgDB_username:sup3rSecure!
-
-# { id: "MY_SPECIAL_DB2", description: "Human-friendly description of database 2", boundary: "Network" } 
-192.168.2.24:5033:pgDB2_name:pgDB2_username:sup3rSecure!
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "postgres") }}
+{{- if (index . "udiaas" "postgres" "password") }}
+# { id: "UDIAAS_DB", description: "Universal Data Infrastructure", boundary: "Network" }
+localhost:5432:{{ .udiaas.postgres.database }}:{{ .udiaas.postgres.user }}:{{ .udiaas.postgres.password }}
+{{- end}}
+{{- end}}
+{{- end}}

@@ -31,19 +31,25 @@ echo "    THEN: Continue installation by bootstrapping \`chezmoi\` from GitHub:"
 echo "    -------------------------------------------------------------------"
 echo "    $ sh -c \"\$(curl -fsSL git.io/chezmoi)\" -- init --apply udi-service/udi-service"
 echo ""
-echo "    This now installs the entire Universal Data Infrastructure (UDI) Docker containers using Ansible"
+text=" You've completed deployed the Universal Data Infrastructure (UDI) Utilities + Docker containers using Ansible "
+
+# Calculate the width of the box
+text_length=${#text}
+box_width=$((text_length + 4))
+
+# Create the top border of the box
+top_border=""
+for ((i = 1; i <= box_width; i++)); do
+    top_border+="*"
+done
+# Display the box and the text
+echo "$top_border"
+echo "* $text *"
+echo "$top_border"
 echo ""
-echo "    Finally: Exit SSH session then restart and this should switch your default shell to `Fish` upon your next login:"
-echo "    ---------------------------------------"
+echo ""
+echo "    EXIT: SSH session and re-login. This should switch your default shell to \`Fish\`"
+echo "    -------------------------------------------------------------------------------"
 echo "    $ exit"
 echo ""
 echo ""
-echo ""
-echo ""
-echo "    We can then use docker ps to list the UDIaaS Docker containers"
-echo "    ---------------------------------------"
-echo "    $ docker ps
-echo ""
-echo "    \`pgpass\` utility can be used to login to the UDIaaS database"
-echo "    ---------------------------------------"
-echo "    fish -c "psql $(pgpass psql-fmt --conn-id='UDIAAS_DB')""

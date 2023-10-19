@@ -48,11 +48,11 @@ Install `chezmoi` and generate configuration files based on values in UDIaaS `ch
 ```bash
 sh -c "$(curl -fsSL git.io/chezmoi)" -- init --apply udi-service/udi-service
 ```
+***
+### This now installs the entire Universal Data Infrastructure (UDI) Utilities + Docker containers using Ansible
+***
 
-This now installs the entire Universal Data Infrastructure (UDI) Docker containers using Ansible
-
-
-Exit the current session by running below command and this should switch your default shell to `Fish` upon your next login:
+Now, exit the current session by running below command and this should switch your default shell to `Fish` upon your next login:
 
 ```bash
 exit

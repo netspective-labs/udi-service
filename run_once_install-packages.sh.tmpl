@@ -89,8 +89,8 @@ echo "done."
 printf "Inspect ${YELLOW}$NLH_ASDF_LOG${NC}: ${RED}`grep error $NLH_ASDF_LOG | wc -l`${NC} potential error messages\n"
 
 # Set Fish as the default shell
-chsh -s /usr/bin/fish
+sudo usermod -s /usr/bin/fish $USER
 
 # Execute ansible playbooks for UDIaaS deployment
 cd $HOME
-ansible-playbook ansible/main.yml
+ANSIBLE_LOCALHOST_WARNING=false ansible-playbook ansible/main.yml

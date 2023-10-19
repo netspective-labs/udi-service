@@ -7,46 +7,42 @@ services:
     command: start --optimized
     restart: always
     environment:
-      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN_USER}
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - KC_DB_DATABASE=$POSTGRES_KEYCLOAK_DB
-      - KC_DB_URL=jdbc:postgresql://postgres/${KC_DB_DATABASE}
+      - KEYCLOAK_ADMIN=${UDIAAS_KEYCLOAK_ADMIN_USER}
+      - KEYCLOAK_ADMIN_PASSWORD=${UDIAAS_KEYCLOAK_ADMIN_PASSWORD}
+      - KC_DB_DATABASE=${UDIAAS_KEYCLOAK_DATABASE}
+      - KC_DB_URL=jdbc:postgresql://udiaas-postgres/${KC_DB_DATABASE}
       - KC_DB_URL_PORT=5432
-      - KC_DB_USERNAME=${POSTGRES_USER}
-      - KC_DB_PASSWORD=${POSTGRES_PASSWORD}
-      - KC_HOSTNAME=${KEYCLOAK_FQDN}
+      - KC_DB_USERNAME=${UDIAAS_POSTGRES_USER}
+      - KC_DB_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}
+      - KC_HOSTNAME=${UDIAAS_KEYCLOAK_FQDN}
     networks:
       - network
     ports:
-      - '${KEYCLOAK_PORT:-8080}:8080'
+      - '${UDIAAS_KEYCLOAK_PORT:-8080}:8080'
 
   postgres:
     container_name: udiaas-postgres
     image: 'ghcr.io/udi-service/udiaas:15.4'
     restart: always
     environment:
-      - POSTGRES_USER='${UDIAAS_POSTGRES_USER}'
-      - POSTGRES_PASSWORD='${UDIAAS_POSTGRES_PASSWORD}'
-      - POSTGRES_DATABASE='${UDIAAS_POSTGRES_DATABASE}'
+      - POSTGRES_USER=${UDIAAS_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${UDIAAS_POSTGRES_DATABASE}
     networks:
       - network
     volumes:
       - udiaas-data:/var/lib/postgresql
     ports:
-      - '5432:5432'
+      - '${UDIAAS_POSTGRES_PORT:-5432}:5432'
 
   postgREST:
     container_name: udiaas-postgrest
     image: postgrest/postgrest:v11.2.1
     restart: always
     environment:
-      PGRST_DB_URI: ${POSTGREST_DB_URI}
-      PGRST_DB_SCHEMA: ${POSTGREST_DB_SCHEMA}
-      PGRST_DB_ANON_ROLE: ${POSTGREST_DB_ANON_ROLE}
-      PGRST_SERVER_PORT: ${POSTGREST_SERVER_PORT}
-      PGRST_JWT_SECRET: ${POSTGREST_JWT_SECRET}
+      - PGRST_DB_URI=postgres://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}
     ports:
-      - '8884:8884'
+      - '${UDIAAS_POSTGREST_PORT:-3000}:3000'
     networks:
       - network
 
@@ -57,12 +53,12 @@ services:
     networks:
       - network
     ports:
-      - 5123:5000
+      - ${UDIAAS_POSTGRAPHILE_PORT:-5000}:5000'
     command:
       - '--cors'
       - '--connection'
       - >-
-        postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@udiaas-postgres:5432/${POSTGRES_DATABASE}
+        postgres://${{UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}
       - '--host'
       - 0.0.0.0
       - '--cors'

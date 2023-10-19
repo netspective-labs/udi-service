@@ -29,7 +29,25 @@
         user = "postgres"
         password = "UDIAAS_POSTGRES_PASSWORD"
         database = "udiaas"
+        port = "5432"
 
     # add [data.sudo_user.*] for creating the ansible var file
     [data.sudo_user]
         password = "SUDO_USER_PASSWORD"
+
+    # add [data.udiaas.keycloak.*] for generating udiaas keycloak docker environment in .config/docker/docker.env:
+    [data.udiaas.keycloak]
+        user = "admin"
+        password = "UDIAAS_KEYCLOAK_ADMIN_PASSWORD"
+        database = "keycloak_udiaas"
+        fqdn = "UDIAAS_KEYCLOAK_FQDN"
+        port = "8080"
+
+    # add [data.udiaas.postgrest.*] for generating udiaas postgREST docker environment in .config/docker/docker.env:
+    [data.udiaas.postgrest]
+        port = "3000"
+
+    # add [data.udiaas.postgraphile.*] for generating udiaas postGraphile docker environment in .config/docker/docker.env:
+    [data.udiaas.postgraphile]
+        port = "5000"
+        

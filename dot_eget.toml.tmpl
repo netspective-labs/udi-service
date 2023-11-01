@@ -18,144 +18,144 @@
   show_hash = false
   upgrade_only = false
 
-# TODO: if any of the following GitHub binaries are available as asdf plugins, switch from eget to asdf
+# TODO: if any of the following GitHub binaries are available as pkgx plugins, switch from eget to pkgx
 # -----------------------------------------------------------------------------------------------------
 # `run_after_dot_eget.toml.sh` will be executed by chezmoi if this file is edited and applied.
 # -----------------------------------------------------------------------------------------------------
-# the keys `nlh_repo_url` and `nlh_description` are not recognized by `eget`,
-# the NLH documentation system uses it like this:
-# fa-jq '.[] | select(.nlh_repo_url != null) | { package: .nlh_repo_url, description: .nlh_description, doctorCmd: .nlh_doctor_cmd } ' ~/.eget.toml -o json | jq
+# the keys `udi_repo_url` and `udi_description` are not recognized by `eget`,
+# the UDI documentation system uses it like this:
+# fa-jq '.[] | select(.udi_repo_url != null) | { package: .udi_repo_url, description: .udi_description, doctorCmd: .udi_doctor_cmd } ' ~/.eget.toml -o json | jq
 
 ["gopasspw/gopass"]
   asset_filters = [ "linux-amd64.tar.gz", "^.sbom" ]
-  nlh_repo_url = "https://github.com/gopasspw/gopass"
-  nlh_description = "Standard unix password manager for teams"
-  nlh_doctor_cmd = "gopass --version"
+  udi_repo_url = "https://github.com/gopasspw/gopass"
+  udi_description = "Standard unix password manager for teams"
+  udi_doctor_cmd = "gopass --version"
 
 ["cyberark/summon"]
-  nlh_repo_url = "https://github.com/cyberark/summon"
-  nlh_description = "CLI that provides on-demand secrets access for common DevOps tools"
-  nlh_doctor_cmd = "summon --version"
+  udi_repo_url = "https://github.com/cyberark/summon"
+  udi_description = "CLI that provides on-demand secrets access for common DevOps tools"
+  udi_doctor_cmd = "summon --version"
 
 ["https://github.com/jzelinskie/faq/releases/download/0.0.7/faq-linux-amd64"]
   target = "~/bin/fa-jq"
-  nlh_repo_url = "https://github.com/jzelinskie/faq"
-  nlh_description = "Format Agnostic jQ -- process various formats with libjq"
-  nlh_doctor_cmd = "fa-jq --version | head -n 1"
+  udi_repo_url = "https://github.com/jzelinskie/faq"
+  udi_description = "Format Agnostic jQ -- process various formats with libjq"
+  udi_doctor_cmd = "fa-jq --version | head -n 1"
 
 ["JanDeDobbeleer/oh-my-posh"]
   asset_filters = [ "posh-linux-amd64" ]
-  nlh_repo_url = "https://github.com/JanDeDobbeleer/oh-my-posh"
-  nlh_description = "https://ohmyposh.dev/ prompt theme engine"
-  nlh_doctor_cmd = "echo \"oh-my-posh `oh-my-posh --version`\""
+  udi_repo_url = "https://github.com/JanDeDobbeleer/oh-my-posh"
+  udi_description = "https://ohmyposh.dev/ prompt theme engine"
+  udi_doctor_cmd = "echo \"oh-my-posh `oh-my-posh --version`\""
 
 ["mondoohq/cnquery"]
   asset_filters = [ "linux_amd64.tar.gz" ]
-  nlh_repo_url = "https://github.com/mondoohq/cnquery"
-  nlh_description = "cnquery cloud-native asset inventory"
-  nlh_doctor_cmd = "cnquery version"
+  udi_repo_url = "https://github.com/mondoohq/cnquery"
+  udi_description = "cnquery cloud-native asset inventory"
+  udi_doctor_cmd = "cnquery version"
 
 ["kashav/fsql"]
   asset_filters = [ "fsql-linux-amd64.tar.gz" ]
-  nlh_repo_url = "https://github.com/kashav/fsql"
-  nlh_description = "fsql searches for files using SQL-like language"
-  nlh_doctor_cmd = "fsql --version"
+  udi_repo_url = "https://github.com/kashav/fsql"
+  udi_description = "fsql searches for files using SQL-like language"
+  udi_doctor_cmd = "fsql --version"
 
 ["filhodanuvem/gitql"]
-  nlh_repo_url = "https://github.com/filhodanuvem/gitql"
-  nlh_description = "Git repo query language"
-  nlh_doctor_cmd = "gitql --version"
+  udi_repo_url = "https://github.com/filhodanuvem/gitql"
+  udi_description = "Git repo query language"
+  udi_doctor_cmd = "gitql --version"
 
 ["mergestat/mergestat-lite"]
-  nlh_repo_url = "https://github.com/mergestat/mergestat-lite"
-  nlh_description = "query git repositories with SQL"
+  udi_repo_url = "https://github.com/mergestat/mergestat-lite"
+  udi_description = "query git repositories with SQL"
 
 ["johnkerl/miller"]
   asset_filters = [ ".tar.gz" ]
-  nlh_repo_url = "https://github.com/johnkerl/miller"
-  nlh_description = "Miller is like awk, sed, cut, join, and sort for name-indexed data such as CSV, TSV, and tabular JSON"
-  nlh_doctor_cmd = "mlr --version"
+  udi_repo_url = "https://github.com/johnkerl/miller"
+  udi_description = "Miller is like awk, sed, cut, join, and sort for name-indexed data such as CSV, TSV, and tabular JSON"
+  udi_doctor_cmd = "mlr --version"
 
 ["lesovsky/pgcenter"]
   asset_filters = [ ".tar.gz" ]
-  nlh_repo_url = "https://github.com/lesovsky/pgcenter"
-  nlh_description = "pgcenter admin tool for observing and troubleshooting Postgres"
-  nlh_doctor_cmd = "pgcenter --version"
+  udi_repo_url = "https://github.com/lesovsky/pgcenter"
+  udi_description = "pgcenter admin tool for observing and troubleshooting Postgres"
+  udi_doctor_cmd = "pgcenter --version"
 
 ["shenwei356/csvtk"]
-  nlh_repo_url = "https://github.com/shenwei356/csvtk"
-  nlh_description = "csvtk is a cross-platform, efficient and practical CSV/TSV toolkit"
-  nlh_doctor_cmd = "csvtk version"
+  udi_repo_url = "https://github.com/shenwei356/csvtk"
+  udi_description = "csvtk is a cross-platform, efficient and practical CSV/TSV toolkit"
+  udi_doctor_cmd = "csvtk version"
 
 ["BurntSushi/xsv"]
-  nlh_repo_url = "https://github.com/BurntSushi/xsv"
-  nlh_description = "xsv is a fast CSV command line toolkit"
-  nlh_doctor_cmd = "echo \"xsv `xsv --version`\""
+  udi_repo_url = "https://github.com/BurntSushi/xsv"
+  udi_description = "xsv is a fast CSV command line toolkit"
+  udi_doctor_cmd = "echo \"xsv `xsv --version`\""
 
 ["cube2222/octosql"]
-  nlh_repo_url = "https://github.com/cube2222/octosql"
-  nlh_description = "octosql is a query tool that allows you to join, analyse and transform data from multiple databases and file formats using SQL"
-  nlh_doctor_cmd = "octosql --version"
+  udi_repo_url = "https://github.com/cube2222/octosql"
+  udi_description = "octosql is a query tool that allows you to join, analyse and transform data from multiple databases and file formats using SQL"
+  udi_doctor_cmd = "octosql --version"
 
 ["harelba/q"]
-  nlh_repo_url = "https://github.com/harelba/q"
-  nlh_description = "q runs SQL directly on delimited files and multi-file sqlite databases"
-  nlh_doctor_cmd = "q --version 2>&1 | head -n 1"
+  udi_repo_url = "https://github.com/harelba/q"
+  udi_description = "q runs SQL directly on delimited files and multi-file sqlite databases"
+  udi_doctor_cmd = "q --version 2>&1 | head -n 1"
 
 ["TheWaWaR/simple-http-server"]
-  nlh_repo_url = "https://github.com/TheWaWaR/simple-http-server"
-  nlh_description = "simple-http-server is a tiny web server for local development use"
-  nlh_doctor_cmd = "simple-http-server --version"
+  udi_repo_url = "https://github.com/TheWaWaR/simple-http-server"
+  udi_description = "simple-http-server is a tiny web server for local development use"
+  udi_doctor_cmd = "simple-http-server --version"
 
 ["joshuathompson/psqlconnect"]
-  nlh_repo_url = "https://github.com/joshuathompson/psqlconnect"
-  nlh_description = "TUI which reads ~/.pgpass, shows menu of connections and runs psql"
-  # nlh_doctor_cmd is not supplied since psqlconnect doesn't have a --version CLI
+  udi_repo_url = "https://github.com/joshuathompson/psqlconnect"
+  udi_description = "TUI which reads ~/.pgpass, shows menu of connections and runs psql"
+  # udi_doctor_cmd is not supplied since psqlconnect doesn't have a --version CLI
 
 ["sibprogrammer/xq"]
-  nlh_repo_url = "https://github.com/sibprogrammer/xq"
-  nlh_description = "Command-line XML and HTML beautifier and content extractor"
-  nlh_doctor_cmd = "xq --version"
+  udi_repo_url = "https://github.com/sibprogrammer/xq"
+  udi_description = "Command-line XML and HTML beautifier and content extractor"
+  udi_doctor_cmd = "xq --version"
 
 ["Orange-OpenSource/hurl"]
-  nlh_repo_url = "https://github.com/Orange-OpenSource/hurl"
-  nlh_description = "Run and test HTTP requests with plain text"
-  nlh_doctor_cmd = "hurl --version | head -n 1"
+  udi_repo_url = "https://github.com/Orange-OpenSource/hurl"
+  udi_description = "Run and test HTTP requests with plain text"
+  udi_doctor_cmd = "hurl --version | head -n 1"
 
 ["XAMPPRocky/tokei"]
   asset_filters = [ "tokei-x86_64-unknown-linux-musl.tar.gz" ]
-  nlh_repo_url = "https://github.com/XAMPPRocky/tokei"
-  nlh_description = "Displays statistics (files, lines, comments, etc.) about your code"
-  nlh_doctor_cmd = "tokei --version"
+  udi_repo_url = "https://github.com/XAMPPRocky/tokei"
+  udi_description = "Displays statistics (files, lines, comments, etc.) about your code"
+  udi_doctor_cmd = "tokei --version"
 
 ["duckdb/duckdb"]
   asset_filters = [ "duckdb_cli-linux-amd64.zip" ]
-  nlh_repo_url = "https://github.com/XAMPPRocky/tokei"
-  nlh_description = "In-process SQL OLAP Database Management System"
-  nlh_doctor_cmd = "duckdb --version"
+  udi_repo_url = "https://github.com/XAMPPRocky/tokei"
+  udi_description = "In-process SQL OLAP Database Management System"
+  udi_doctor_cmd = "duckdb --version"
 
 ["k1LoW/tbls"]
-  nlh_repo_url = "https://github.com/k1LoW/tbls"
-  nlh_description = "tbls generates GitHub-flavored Markdown schema documentation for databases"
-  nlh_doctor_cmd = "echo \"tbls `tbls version`\""
+  udi_repo_url = "https://github.com/k1LoW/tbls"
+  udi_description = "tbls generates GitHub-flavored Markdown schema documentation for databases"
+  udi_doctor_cmd = "echo \"tbls `tbls version`\""
 
 ["jdxcode/rtx"]
   asset_filters = [ "linux-x64.tar.gz" ]
-  nlh_repo_url = "https://github.com/jdxcode/rtx"
-  nlh_description = "Runtime manager (asdf rust clone)"
-  nlh_doctor_cmd = "echo \"rtx `rtx --version`\""
+  udi_repo_url = "https://github.com/jdxcode/rtx"
+  udi_description = "Runtime manager"
+  udi_doctor_cmd = "echo \"rtx `rtx --version`\""
 
 ["PRQL/prql-query"]
-  nlh_repo_url = "https://github.com/PRQL/prql-query"
-  nlh_description = "Query and transform data with PRQL"
-  nlh_doctor_cmd = "echo \"PRQL/prql-query (pq) should be installed but has no --version capability\""
+  udi_repo_url = "https://github.com/PRQL/prql-query"
+  udi_description = "Query and transform data with PRQL"
+  udi_doctor_cmd = "echo \"PRQL/prql-query (pq) should be installed but has no --version capability\""
 
 ["terrastruct/d2"]
-  nlh_repo_url = "https://github.com/terrastruct/d2"
-  nlh_description = "Modern scripting language that turns text to diagrams"
-  nlh_doctor_cmd = "echo \"d2 `d2 --version`\""
+  udi_repo_url = "https://github.com/terrastruct/d2"
+  udi_description = "Modern scripting language that turns text to diagrams"
+  udi_doctor_cmd = "echo \"d2 `d2 --version`\""
 
 ["Doctave/doctave"]
-  nlh_repo_url = "https://github.com/Doctave/doctave"
-  nlh_description = "A batteries-included developer documentation site generator"
-  nlh_doctor_cmd = "doctave --version"
+  udi_repo_url = "https://github.com/Doctave/doctave"
+  udi_description = "A batteries-included developer documentation site generator"
+  udi_doctor_cmd = "doctave --version"

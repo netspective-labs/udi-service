@@ -1,10 +1,10 @@
 #!/bin/bash
 # This binary is managed by chezmoi in {{ .chezmoi.sourceFile }}. DO NOT EDIT directly.
-# To modify, use `chezmoi edit ~/bin/nlh-doctor --apply`. 
+# To modify, use `chezmoi edit ~/bin/udi-doctor --apply`. 
 
 set -uo pipefail
 
-# TODO: check nlh-* log files and report errors count (suggest troubleshooting)
+# TODO: check udi-* log files and report errors count (suggest troubleshooting)
 
 echo "curl `curl --version | head -n 1 | awk '{ print $2 }'`"
 wget --version | head -n 1
@@ -23,13 +23,9 @@ eget --version
 psql --version
 mysql --version
 pgpass --version
+pkgx --version
 
-# NLH standard is to put all GitHub-downloadable packages in ~/.eget.toml and
+# UDI standard is to put all GitHub-downloadable packages in ~/.eget.toml and
 # we store our own extra properties per package so we can auto-generate the
 # documentation. Default `jq` cannot parse TOML files so we use `fa-jq` first.
-fa-jq '.[] | select(.nlh_doctor_cmd != null)' ~/.eget.toml -o json | jq -r '.nlh_doctor_cmd' | sort | sh
-
-echo "asdf `asdf --version`"
-for pkg in `asdf plugin list`; do 
-    asdf current $pkg | sed 's/^/  /'
-done
+fa-jq '.[] | select(.udi_doctor_cmd != null)' ~/.eget.toml -o json | jq -r '.udi_doctor_cmd' | sort | sh

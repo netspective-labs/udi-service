@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 set -uo pipefail
 
 # -------------------------------------------------------------------------------------------------
@@ -76,9 +76,6 @@ chmod +x ~/bin/daff
 
 echo "done."
 printf "Inspect ${YELLOW}$UDI_PKGX_LOG${NC}: ${RED}`grep error $UDI_PKGX_LOG | wc -l`${NC} potential error messages\n"
-
-# Set Fish as the default shell
-sudo usermod -s /usr/bin/fish $USER
 
 # Execute ansible playbooks for UDIaaS deployment
 cd $HOME

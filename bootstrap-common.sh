@@ -2,7 +2,8 @@
 set -o errexit -o nounset -o pipefail
 
 # Install pkgx standalone binary.
-curl -Ssf https://pkgx.sh/$(uname)/$(uname -m).tgz | sudo tar xz -C ~/bin
+mkdir -p ~/bin
+curl -Ssf https://pkgx.sh/$(uname)/$(uname -m).tgz | tar xz -C ~/bin
 
 # use chezmoi.toml template and set it up so that subsequent chezmoi installation can use it
 # TODO: switch to https://www.chezmoi.io/reference/special-files-and-directories/chezmoi-format-tmpl/
@@ -20,23 +21,6 @@ echo ""
 echo "    THEN: Continue installation by bootstrapping \`chezmoi\` from GitHub:"
 echo "    -------------------------------------------------------------------"
 echo "    $ sh -c \"\$(curl -fsSL git.io/chezmoi)\" -- init --apply udi-service/udi-service"
-echo ""
-text=" You've completed deployed the Universal Data Infrastructure (UDI) Utilities + Docker containers using Ansible "
-
-# Calculate the width of the box
-text_length=${#text}
-box_width=$((text_length + 4))
-
-# Create the top border of the box
-top_border=""
-for ((i = 1; i <= box_width; i++)); do
-    top_border+="*"
-done
-# Display the box and the text
-echo "$top_border"
-echo "* $text *"
-echo "$top_border"
-echo ""
 echo ""
 echo "    EXIT: SSH session and re-login. This should switch your default shell to \`Fish\`"
 echo "    -------------------------------------------------------------------------------"

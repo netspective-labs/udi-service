@@ -18,4 +18,4 @@
 [packages.pkgx]
     # see https://pkgx.dev/pkgs/ for existing packages`
     # if you have a special package to install that not everyone else might need, define those in ~/.config/chezmoi/chezmoi.toml
-    plugins_auto_install = ["bun", "dasel", "deno", "exa", "fzf", "glab", "opa", "rclone", "sqlite3", "zoxide"]
+    plugins_auto_install = ["bun", "dasel", "deno", "exa", "fzf", "glab", "opa", "rclone", "sqlite3", "zoxide", "direnv"]

@@ -51,6 +51,9 @@ OSQ_DEB_FILE=osquery_${OSQ_VERSION}-1.linux_amd64.deb
 sudo curl -fsSL -o $OSQ_APT_CACHE/$OSQ_DEB_FILE https://pkg.osquery.io/deb/$OSQ_DEB_FILE
 sudo dpkg -i $OSQ_APT_CACHE/$OSQ_DEB_FILE
 
+# Set Fish as the default shell
+sudo usermod -s /usr/bin/fish $USER
+
 echo "Universal Data Infrastructure (UDI) Service Debian-typical boostrap complete. Installed:"
 echo " - fish, curl, git, gitextras, jq, pass, unzip, bzip2, tree, and make"
 echo " - osquery (for endpoint observability)"

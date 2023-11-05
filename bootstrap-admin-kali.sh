@@ -23,7 +23,7 @@ sudo apt-get -y -qq install fish curl git jq pass unzip bzip2 tree make bsdmainu
 # install database clients for accessing remote databases
 sudo apt-get -y -qq install postgresql-client default-mysql-client
 
-# install "build essentials" that are needed to build local binaries (e.g. `asdf` uses it for SQLite package)
+# install "build essentials" that are needed to build local binaries
 sudo apt-get -y -qq install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libxml2-dev xz-utils tk-dev libxmlsec1-dev libreadline-dev libffi-dev libbz2-dev liblzma-dev llvm
 
 # install common diagramming as code tools
@@ -43,6 +43,9 @@ OSQ_APT_CACHE=/var/cache/apt/archives
 OSQ_DEB_FILE=osquery_${OSQ_VERSION}-1.linux_amd64.deb
 sudo curl -fsSL -o $OSQ_APT_CACHE/$OSQ_DEB_FILE https://pkg.osquery.io/deb/$OSQ_DEB_FILE
 sudo dpkg -i $OSQ_APT_CACHE/$OSQ_DEB_FILE
+
+# Set Fish as the default shell
+sudo usermod -s /usr/bin/fish $USER
 
 echo "UDIaaS Debian-typical boostrap complete. Installed:"
 echo " - fish, curl, git, gitextras, jq, pass, unzip, bzip2, tree, and make"

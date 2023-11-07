@@ -11,18 +11,18 @@ This is a [chezmoi](https://www.chezmoi.io/), [ansible](https://www.ansible.com/
 - Debian 12 64 bit operating system.
 - Ubuntu 22.04 64 bit operating system.
   
-Any Debian-based distro (Default - Debian 12) which supports Fish Shell 3.6+ should also work, including Ubuntu 22.04 LTS, Kali with Fish upgrades, etc.
+Any Debian-based distro (Default - Debian 12) which supports Fish Shell 3.6+ should also work, including Ubuntu 22.04 LTS etc.
 
 Everything done here should be scripted, with the scripts stored in GitHub for easy re-running through Fish shell or `chezmoi`.
 
 ## One-time setup
 
-Bootstrap our preferred Ubuntu environment with required utilities (be sure to use `bootstrap-admin-debian.sh` or `bootstrap-admin-kali.sh` if you're not using Ubuntu):
+Bootstrap our preferred Debian environment with required utilities (be sure to use `bootstrap-admin-ubuntu.sh` if you're in Ubuntu):
 
 ```bash
 cd $HOME && sudo apt-get -qq update && sudo apt-get install curl -y -qq && \
    sudo apt-get -qq update && sudo apt-get -qq install -y lsb-release && \
-   curl -fsSL https://raw.githubusercontent.com/udi-service/udi-service/master/bootstrap-admin-ubuntu.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/udi-service/udi-service/master/bootstrap-admin-debian.sh | bash
 ```
 
 Once the admin (`sudo`) part of the boostrap is complete, continue with non-admin:

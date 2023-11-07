@@ -1,0 +1,207 @@
+version: '3.3'
+services:
+
+  postgres:
+    container_name: udiaas-postgres
+    image: 'ghcr.io/udi-service/udiaas:15.4'
+    restart: always
+    environment:
+      - POSTGRES_USER=${UDIAAS_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${UDIAAS_POSTGRES_DATABASE}
+    networks:
+      - network
+    volumes:
+      - udiaas-data:/var/lib/postgresql
+    ports:
+      - '${UDIAAS_POSTGRES_PORT:-5432}:5432'
+
+
+  postGraphile:
+    container_name: udiaas-postgraphile
+    image: 'ghcr.io/udi-service/udiaas-postgraphile:4.14.0'
+    restart: always
+    networks:
+      - network
+    ports:
+      - '${UDIAAS_POSTGRAPHILE_PORT:-5000}:5000'
+    command:
+      - '--cors'
+      - '--connection'
+      - >-
+        postgres://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}
+      - '--host'
+      - 0.0.0.0
+      - '--cors'
+      - '--schema'
+      - public
+      - '--retry-on-init-fail'
+      - '--graphiql'
+      - /
+      - '--enhance-graphiql'
+      - '--simple-collections'
+      - both
+      - '--append-plugins'
+      - >-
+        @graphile-contrib/pg-simplify-inflector,postgraphile-plugin-connection-filter,@graphile-contrib/pg-order-by-related
+      - '--skip-plugins'
+      - graphile-build-pg:PgNodeAliasPostGraphile
+
+  emailengine-ee:
+    restart: always
+    container_name: udiaas-emailengine-ee
+    image: postalsys/emailengine:v2.39.0
+    ports:
+      - '${API_WEBINTERFACE_PORT:-3000}:3000'
+      - '${SMTP_PORT:-2525}:2525'
+      - '${IMAP_PORT:-9993}:9993'
+    depends_on:
+      - redis-ee
+    environment:
+      EENGINE_SETTINGS: >
+        {
+         "smtpServerEnabled": true,
+         "smtpServerPort": "${SMTP_PORT}",
+         "smtpServerHost": "0.0.0.0",
+         "smtpServerAuthEnabled": true,
+         "smtpServerPassword": "passw0rd"
+         }
+      EENGINE_SECRET: 'secret'
+  # Database connection URL
+      EENGINE_REDIS: 'redis://redis-ee:6379/2'
+
+  redis-ee:
+    image: redis:alpine
+    container_name: udiaas-redis-ee
+    restart: always
+    volumes:
+      - redis-ee-data:/data
+
+
+  elasticSearchEngine:
+    container_name: udiaas-documentsearch
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:8.10.2'
+    restart: always
+    ports:
+      - '${UI_PORT:-9200}:9200'
+      - '${PORT:-9300}:9300'
+    environment:
+      discovery.type: single-node
+      CLI_JAVA_OPTS: "-Xms512m -Xmx900m"
+      cluster.name: elasticsearch-cluster
+      http.port: 9200
+      node.name: documentsearch-ee
+      xpack.security.enabled: 'false'
+    volumes:
+      - 'elasticSearchEngine-storage:/usr/share/elasticsearch'
+
+  grafana:
+    image: grafana/grafana:8.4.4
+    container_name: udiaas-grafana
+    environment:
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=vertamedia-clickhouse-datasource
+    ports:
+      - '${GRAFANA_PORT:-3000}:3000'
+    restart: always
+    networks:
+      - network
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - grafana-conf:/etc/grafana
+
+  prometheus:
+    container_name: udiaas-prometheus
+    "command": "--storage.tsdb.path=/var/prometheus/data --web.listen-address :9090 --web.enable-admin-api --config.file=/etc/prometheus/prometheus.yml"
+    image: prom/prometheus
+    networks:
+    - network
+    ports:
+    - '${PROMETHEUS_PORT:-9090}:9090'
+    user: root
+    volumes:
+    - prometheus-storage:/var/prometheus/data
+    - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+
+  postgres_exporter:
+    container_name: udiaas-postresql-exporter
+    image: bitnami/postgres-exporter:0.15.0
+    command:
+      - "--extend.query-path=/etc/postgres/queries.yaml"
+    environment:
+    - "DATA_SOURCE_NAME=postgresql://POSTGRES_USER:POSTGRES_PASSWORD@HOSTNAME:DB_PORT/POSTGRES_DB?sslmode=disable"
+    networks:
+    - network
+    ports:
+    - '${POSTGRES_EXPORTER_PORT:-9187}:9187'
+    restart: always
+
+  openobserve:
+    container_name: udiaas-openobserve
+    image: public.ecr.aws/zinclabs/openobserve:v0.6.4
+    ports:
+      - '${OPENOBSERVE_PORT:-5080}:5080'
+    environment:
+      - ZO_DATA_DIR=/data
+      - ZO_ROOT_USER_EMAIL=openobserve@opsfolio.com
+      - ZO_ROOT_USER_PASSWORD=mF44cOzVO#2IO
+
+  steampipe:
+    container_name: udiaas-steampipe
+    image: turbot/steampipe:latest
+    environment:
+      - AWS_REGION='${AWS_REGION}'
+      - AWS_ACCESS_KEY_ID='${AWS_ACCESS_KEY_ID}'
+      - AWS_SECRET_ACCESS_KEY='${AWS_SECRET_ACCESS_KEY}'
+      - DATABASE_URL=postgresql://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:${UDIAAS_POSTGRES_PORT}/${UDIAAS_POSTGRES_DATABASE}
+    volumes:
+      - ./queries:/root/.steampipe/queries
+    command: ["steampipe", "query", "-c", "/root/.steampipe/queries"]
+
+  zitadel:
+    container_name: udiaas-zitadel
+    restart: 'always'
+    image: 'ghcr.io/zitadel/zitadel:v2.40.3'
+    command: 'start-from-init --masterkey "ziIoh2MNklM8mKNoYU0lCKalaRropzJe" --tlsMode external'
+    environment:
+      - 'ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME=${ZITADEL_ADMIN_USER}'
+      - 'ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD=${ZITADEL_PASSWORD}'
+      - 'ZITADEL_EXTERNALDOMAIN=${ZITADEL_DOMAIN}'
+      - 'ZITADEL_EXTERNALPORT=443'
+      - 'ZITADEL_EXTERNALSECURE=false'
+      - 'ZITADEL_DATABASE_POSTGRES_HOST=udiaas-postgres'
+      - 'ZITADEL_DATABASE_POSTGRES_PORT=${UDIAAS_POSTGRES_PORT}'
+      - 'ZITADEL_DATABASE_POSTGRES_DATABASE=${UDIAAS_POSTGRES_DATABASE}'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME=${UDIAAS_POSTGRES_USER}'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE=disable'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_USERNAME=${UDIAAS_POSTGRES_USER}'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE=disable'
+
+    depends_on:
+      postgres:
+        condition: 'service_healthy'
+    ports:
+      - '${ZITADEL_PORT:-8080}:8080'
+    networks:
+      - network
+    volumes:
+      - zitadel-data:/var/lib/postgresql/data
+
+
+networks:
+  network:
+    external:
+      name: udiaas
+
+volumes:
+   udiaas-data: {}
+   redis-ee-data: {}
+   elasticSearchEngine-storage: {}
+   grafana-storage: {}
+   grafana-conf: {}
+   prometheus-storage: {}
+   openobserve: {}
+   steampipe: {}
+   zitadel-data: {}

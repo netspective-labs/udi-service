@@ -6,22 +6,14 @@ Code and governance for deploying Universal Data Infrastructure as a Service (UD
 
 This is a [chezmoi](https://www.chezmoi.io/), [ansible](https://www.ansible.com/) and [docker](https://www.docker.com/) based setup for UDIaaS deployment on a Linux-like operating systems. 
 
-## Setup the operating system (WSL2 Method)
+## Setup the operating system
 
-If you're using Windows 10/11 with WSL2, create a "disposable" Linux instance using Powershell CLI or Windows Store. This means everything done here should be scripted, with the scripts stored in GitHub for easy re-running through Fish shell or `chezmoi`.
+- Debian 12 64 bit operating system.
+- Ubuntu 22.04 64 bit operating system.
+  
+Any Debian-based distro (Default - Debian 12) which supports Fish Shell 3.6+ should also work, including Ubuntu 22.04 LTS, Kali with Fish upgrades, etc.
 
-Linux versions:
-
-Any Debian-based distro which supports Fish Shell 3.6+ should also work, including Ubuntu 22.04 LTS, Kali and Debian 11+ with Fish upgrades, etc.
-
-If you're using Windows WSL, you can use these commands to install/uninstall our preferred distro:
-
-```powershell
-$ wsl --unregister Ubuntu-22.04
-$ wsl --install -d Ubuntu-22.04
-```
-
-If you're using a Debian-based distro you should be able to run this repo in any Debian user account. It will probably work with any Linux-like OS but has only been tested on Debian-based distros (e.g. Ubuntu 22.04 LTS and Kali Linux).
+Everything done here should be scripted, with the scripts stored in GitHub for easy re-running through Fish shell or `chezmoi`.
 
 ## One-time setup
 

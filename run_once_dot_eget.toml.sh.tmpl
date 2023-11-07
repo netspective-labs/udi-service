@@ -44,7 +44,7 @@ rm -f ~/bin/git-query
 ln -s ~/bin/gitql ~/bin/git-query
 
 # setup fish CLI command completions for `gopass`
-export PATH=$PATH:~/bin
+mkdir -p ~/.config/fish/completions
 ~/bin/gopass completion fish > ~/.config/fish/completions/gopass.fish
 
 echo "done."

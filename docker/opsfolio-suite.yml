@@ -141,6 +141,8 @@ services:
     image: public.ecr.aws/zinclabs/openobserve:v0.6.4
     ports:
       - '${OPENOBSERVE_PORT:-5080}:5080'
+    volumes:
+      - "./data:/data"
     environment:
       - ZO_DATA_DIR=/data
       - ZO_ROOT_USER_EMAIL=openobserve@opsfolio.com
@@ -204,4 +206,3 @@ volumes:
    prometheus-storage: {}
    openobserve: {}
    steampipe: {}
-   zitadel-data: {}

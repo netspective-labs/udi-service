@@ -1,0 +1,277 @@
+# This file is managed by chezmoi in {{ .chezmoi.sourceFile }}. DO NOT EDIT directly.
+# To modify, use `chezmoi edit ~/docker/docker-compose.yml --apply`.
+
+version: '3.3'
+services:
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "postgres") }}
+  postgres:
+    container_name: udiaas-postgres
+    image: 'ghcr.io/udi-service/udiaas:${UDIAAS_POSTGRES_VERSION}'
+    restart: always
+    environment:
+      - POSTGRES_USER=${UDIAAS_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${UDIAAS_POSTGRES_DATABASE}
+    networks:
+      - network
+    volumes:
+      - udiaas-data:/var/lib/postgresql
+    ports:
+      - '${UDIAAS_POSTGRES_PORT:-5432}:5432'
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "emailengine") }}
+  emailengine:
+    restart: always
+    container_name: udiaas-emailengine
+    image: postalsys/emailengine:${UDIAAS_EMAILENGINE_VERSION}
+    ports:
+      - '${UDIAAS_EMAILENGINE_PORT:-6000}:3000'
+    depends_on:
+      - redis-ee
+    environment:
+      # Encryption secret
+      EENGINE_SECRET: '${UDIAAS_EMAILENGINE_SECRET}'
+      # Database connection URL
+      EENGINE_REDIS: 'redis://redis-ee:6379/2'
+
+  redis-ee:
+    image: redis:alpine
+    container_name: udiaas-redis-ee
+    restart: always
+    volumes:
+      - redis-ee-data:/data
+
+  elasticSearch:
+    container_name: udiaas-documentsearch-ee
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:${UDIAAS_ELASTICSEARCH_VERSION}'
+    restart: always
+    ports:
+      - '${UDIAAS_ELASTICSEARCH_PORT:-9200}:9200'
+    environment:
+      discovery.type: single-node
+      CLI_JAVA_OPTS: "-Xms512m -Xmx900m"
+      cluster.name: elasticsearch-cluster
+      http.port: 9200
+      node.name: udiaas-documentsearch-ee
+      xpack.security.enabled: 'false'
+    volumes:
+      - 'elasticSearchEngine-storage:/usr/share/elasticsearch'
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "grafana") }}
+  grafana:
+    image: grafana/grafana:${UDIAAS_GRAFANA_VERSION}
+    container_name: udiaas-grafana
+    ports:
+      - '${UDIAAS_GRAFANA_PORT:-7000}:3000'
+    restart: always
+    networks:
+      - network
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - grafana-conf:/etc/grafana
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "prometheus") }}
+  prometheus:
+    container_name: udiaas-prometheus
+    "command": "--storage.tsdb.path=/var/prometheus/data --web.listen-address :9090 --web.enable-admin-api --config.file=/etc/prometheus/prometheus.yml"
+    image: prom/prometheus:${UDIAAS_PROMETHEUS_VERSION}
+    networks:
+    - network
+    ports:
+    - '${UDIAAS_PROMETHEUS_PORT:-9090}:9090'
+    user: root
+    volumes:
+    - prometheus-storage:/var/prometheus/data
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "postgres_exporter") }}
+  postgres_exporter:
+    container_name: udiaas-postresql-exporter
+    image: bitnami/postgres-exporter:${UDIAAS_POSTGRES_EXPORTER_VERSION}
+    command:
+      - "--extend.query-path=/etc/postgres/queries.yaml"
+    environment:
+    - "DATA_SOURCE_NAME=postgresql://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}?sslmode=disable"
+    networks:
+    - network
+    ports:
+    - '${UDIAAS_POSTGRES_EXPORTER_PORT:-9187}:9187'
+    restart: always
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "steampipe") }}
+  steampipe:
+    container_name: udiaas-steampipe
+    image: turbot/steampipe:${UDIAAS_STEAMPIPE_VERSION}
+    environment:
+      - AWS_REGION='${AWS_REGION}'
+      - AWS_ACCESS_KEY_ID='${AWS_ACCESS_KEY_ID}'
+      - AWS_SECRET_ACCESS_KEY='${AWS_SECRET_ACCESS_KEY}'
+      - DATABASE_URL=postgresql://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_STEAMPIPE_DATABASE}
+    volumes:
+      - 'steampipe-data:/root/.steampipe/queries'
+    command: ["steampipe", "query", "-c", "/root/.steampipe/queries"]
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "keycloak") }}
+  keycloak:
+    container_name: keycloak
+    image: 'ghcr.io/udi-service/udiaas-keycloak:${UDIAAS_KEYCLOAK_VERSION}'
+    command: start --optimized
+    restart: always
+    environment:
+      - KEYCLOAK_ADMIN=${UDIAAS_KEYCLOAK_ADMIN_USER}
+      - KEYCLOAK_ADMIN_PASSWORD=${UDIAAS_KEYCLOAK_ADMIN_PASSWORD}
+      - KC_DB_DATABASE=${UDIAAS_KEYCLOAK_DATABASE}
+      - KC_DB_URL=jdbc:postgresql://udiaas-postgres/${UDIAAS_KEYCLOAK_DATABASE}
+      - KC_DB_URL_PORT=5432
+      - KC_DB_USERNAME=${UDIAAS_POSTGRES_USER}
+      - KC_DB_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}
+      - KC_HOSTNAME=${UDIAAS_KEYCLOAK_FQDN}
+    networks:
+      - network
+    ports:
+      - '${UDIAAS_KEYCLOAK_PORT:-8080}:8080'
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "postgrest") }}
+  postgREST:
+    container_name: udiaas-postgrest
+    image: postgrest/postgrest:${UDIAAS_POSTGREST_VERSION}
+    restart: always
+    environment:
+      - PGRST_DB_URI=postgres://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}
+    ports:
+      - '${UDIAAS_POSTGREST_PORT:-3000}:3000'
+    networks:
+      - network
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "postgraphile") }}
+  postGraphile:
+    container_name: udiaas-postgraphile
+    image: 'ghcr.io/udi-service/udiaas-postgraphile:${UDIAAS_POSTGRAPHILE_VERSION}'
+    restart: always
+    networks:
+      - network
+    ports:
+      - '${UDIAAS_POSTGRAPHILE_PORT:-5000}:5000'
+    command:
+      - '--cors'
+      - '--connection'
+      - >-
+        postgres://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}
+      - '--host'
+      - 0.0.0.0
+      - '--cors'
+      - '--schema'
+      - public
+      - '--retry-on-init-fail'
+      - '--graphiql'
+      - /
+      - '--enhance-graphiql'
+      - '--simple-collections'
+      - both
+      - '--append-plugins'
+      - >-
+        @graphile-contrib/pg-simplify-inflector,postgraphile-plugin-connection-filter,@graphile-contrib/pg-order-by-related
+      - '--skip-plugins'
+      - graphile-build-pg:PgNodeAliasPostGraphile
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "openobserve") }}
+  openobserve:
+    container_name: udiaas-openobserve
+    image: public.ecr.aws/zinclabs/openobserve:${UDIAAS_OPENOBSERVE_VERSION}
+    ports:
+      - '${UDIAAS_OPENOBSERVE_PORT:-5080}:5080'
+    volumes:
+      - 'openobserve-data:/data'
+    environment:
+      - ZO_DATA_DIR=/data
+      - ZO_ROOT_USER_EMAIL=${UDIAAS_OPENOBSERVE_USER_EMAIL}
+      - ZO_ROOT_USER_PASSWORD=${UDIAAS_OPENOBSERVE_USER_PASSWORD}
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "zitadel") }}
+  zitadel:
+    container_name: udiaas-zitadel
+    restart: 'always'
+    image: 'ghcr.io/zitadel/zitadel:${UDIAAS_ZITADEL_VERSION}'
+    command: 'start-from-init --masterkey "${UDIAAS_ZITADEL_MASTERKEY}" --tlsMode external'
+    environment:
+      - 'ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME=${UDIAAS_ZITADEL_ADMIN_USER}'
+      - 'ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD=${UDIAAS_ZITADEL_PASSWORD}'
+      - 'ZITADEL_EXTERNALDOMAIN=${UDIAAS_ZITADEL_DOMAIN}'
+      - 'ZITADEL_EXTERNALPORT=443'
+      - 'ZITADEL_EXTERNALSECURE=false'
+      - 'ZITADEL_DATABASE_POSTGRES_HOST=udiaas-postgres'
+      - 'ZITADEL_DATABASE_POSTGRES_PORT=5432'
+      - 'ZITADEL_DATABASE_POSTGRES_DATABASE=${UDIAAS_ZITADEL_DATABASE}'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME=${UDIAAS_POSTGRES_USER}'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}'
+      - 'ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE=disable'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_USERNAME=${UDIAAS_POSTGRES_USER}'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}'
+      - 'ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE=disable'
+    ports:
+      - '${UDIAAS_ZITADEL_PORT:-8080}:8080'
+    networks:
+      - network
+{{- end}}
+{{- end}}
+
+networks:
+  network:
+    external:
+      name: udiaas
+
+{{- if (index . "udiaas") }}
+volumes:
+{{- if (index . "udiaas" "postgres") }}
+  udiaas-data: {}
+{{- end}}
+{{- if (index . "udiaas" "emailengine") }}
+   redis-ee-data: {}
+   elasticSearchEngine-storage: {}
+{{- end}}
+{{- if (index . "udiaas" "grafana") }}
+   grafana-storage: {}
+   grafana-conf: {}
+{{- end}}
+{{- if (index . "udiaas" "prometheus") }}
+  prometheus-storage: {}
+{{- end}}
+{{- if (index . "udiaas" "openobserve") }}
+  openobserve-data: {}
+{{- end}}
+{{- if (index . "udiaas" "steampipe") }}
+  steampipe-data: {}
+{{- end}}
+{{- end}}

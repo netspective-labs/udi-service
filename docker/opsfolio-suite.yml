@@ -1,6 +1,5 @@
 version: '3.3'
 services:
-
   postgres:
     container_name: udiaas-postgres
     image: 'ghcr.io/udi-service/udiaas:15.4'
@@ -15,7 +14,6 @@ services:
       - udiaas-data:/var/lib/postgresql
     ports:
       - '${UDIAAS_POSTGRES_PORT:-5432}:5432'
-
 
   postGraphile:
     container_name: udiaas-postgraphile

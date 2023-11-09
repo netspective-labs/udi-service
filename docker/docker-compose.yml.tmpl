@@ -31,6 +31,8 @@ services:
     image: postalsys/emailengine:${UDIAAS_EMAILENGINE_VERSION}
     ports:
       - '${UDIAAS_EMAILENGINE_PORT:-6000}:3000'
+    networks:
+      - network
     depends_on:
       - redis-ee
     environment:
@@ -42,6 +44,8 @@ services:
   redis-ee:
     image: redis:alpine
     container_name: udiaas-redis-ee
+    networks:
+      - network
     restart: always
     volumes:
       - redis-ee-data:/data
@@ -50,6 +54,8 @@ services:
     container_name: udiaas-documentsearch-ee
     image: 'docker.elastic.co/elasticsearch/elasticsearch:${UDIAAS_ELASTICSEARCH_VERSION}'
     restart: always
+    networks:
+      - network
     ports:
       - '${UDIAAS_ELASTICSEARCH_PORT:-9200}:9200'
     environment:
@@ -87,13 +93,14 @@ services:
     "command": "--storage.tsdb.path=/var/prometheus/data --web.listen-address :9090 --web.enable-admin-api --config.file=/etc/prometheus/prometheus.yml"
     image: prom/prometheus:${UDIAAS_PROMETHEUS_VERSION}
     networks:
-    - network
+      - network
+    restart: always
     ports:
-    - '${UDIAAS_PROMETHEUS_PORT:-9090}:9090'
+      - '${UDIAAS_PROMETHEUS_PORT:-9090}:9090'
     user: root
     volumes:
-    - prometheus-storage:/var/prometheus/data
-    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-storage:/var/prometheus/data
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 {{- end}}
 {{- end}}
 
@@ -105,11 +112,11 @@ services:
     command:
       - "--extend.query-path=/etc/postgres/queries.yaml"
     environment:
-    - "DATA_SOURCE_NAME=postgresql://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}?sslmode=disable"
+      - "DATA_SOURCE_NAME=postgresql://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}?sslmode=disable"
     networks:
-    - network
+      - network
     ports:
-    - '${UDIAAS_POSTGRES_EXPORTER_PORT:-9187}:9187'
+      - '${UDIAAS_POSTGRES_EXPORTER_PORT:-9187}:9187'
     restart: always
 {{- end}}
 {{- end}}
@@ -119,6 +126,9 @@ services:
   steampipe:
     container_name: udiaas-steampipe
     image: turbot/steampipe:${UDIAAS_STEAMPIPE_VERSION}
+    networks:
+    - network
+    restart: always
     environment:
       - AWS_REGION='${AWS_REGION}'
       - AWS_ACCESS_KEY_ID='${AWS_ACCESS_KEY_ID}'
@@ -211,6 +221,9 @@ services:
       - '${UDIAAS_OPENOBSERVE_PORT:-5080}:5080'
     volumes:
       - 'openobserve-data:/data'
+    networks:
+      - network
+    restart: always
     environment:
       - ZO_DATA_DIR=/data
       - ZO_ROOT_USER_EMAIL=${UDIAAS_OPENOBSERVE_USER_EMAIL}
@@ -222,7 +235,7 @@ services:
 {{- if (index . "udiaas" "zitadel") }}
   zitadel:
     container_name: udiaas-zitadel
-    restart: 'always'
+    restart: always
     image: 'ghcr.io/zitadel/zitadel:${UDIAAS_ZITADEL_VERSION}'
     command: 'start-from-init --masterkey "${UDIAAS_ZITADEL_MASTERKEY}" --tlsMode external'
     environment:
@@ -244,6 +257,22 @@ services:
       - '${UDIAAS_ZITADEL_PORT:-8080}:8080'
     networks:
       - network
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "portainer") }}
+  portainer
+    container_name: udiaas-portainer
+    image: portainer/portainer:${UDIAAS_PORTAINER_VERSION}
+    networks:
+      - network
+    restart: always
+    ports:
+      - '${UDIAAS_PORTAINER_PORT:-9000}:9000'
+    volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
+    - 'portainer-data:/data'
 {{- end}}
 {{- end}}
 
@@ -273,5 +302,8 @@ volumes:
 {{- end}}
 {{- if (index . "udiaas" "steampipe") }}
   steampipe-data: {}
+{{- end}}
+{{- if (index . "udiaas" "portainer") }}
+  portainer-data: {}
 {{- end}}
 {{- end}}

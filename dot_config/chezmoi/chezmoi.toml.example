@@ -96,3 +96,8 @@
         admin_password = "UDIAAS_ZITADEL_PASSWORD"
         fdqn = "UDIAAS_ZITADEL_DOMAIN"
         database = "zitadel_udiaas"
+
+    # add [data.udiaas.portainer.*] for generating udiaas portainer docker service:
+    [data.udiaas.portainer]
+        version = "1.25.0"
+        port = "9000"

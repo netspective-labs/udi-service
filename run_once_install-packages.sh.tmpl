@@ -40,16 +40,35 @@ printf "Installing pkgx-managed packages (tail -f ~/.udi-intall-pkgx-packages.sh
 pkgx_user_packages=""
 {{- if (index . "packages") }}
 {{-   if (index . "packages" "pkgx" "user") }}
-{{-     if (index . "packages" "pkgx" "user" "plugins_auto_install") }}
+{{-     if (index . "packages" "pkgx" "user" "auto_install") }}
 # set this so that `pkgx` and other commands that need to access the GitHub API can use it (helps
 # prevent GitHub rate-limiting based issues)
-pkgx_user_packages="{{ .packages.pkgx.user.plugins_auto_install | join " " }}"
+pkgx_user_packages="{{ .packages.pkgx.user.auto_install | join " " }}"
 {{-     end}}
 {{-   end}}
 {{- end}}
 
-for pkg in $pkgx_user_packages {{ .packages.pkgx.plugins_auto_install | join " " }}; do 
+# Install binaries using pkgx
+for pkg in $pkgx_user_packages {{ .packages.pkgx.auto_install | join " " }}; do
     ~/bin/pkgx install $pkg@latest >> $UDI_PKGX_LOG 2>&1
+done
+
+rtx_user_packages=""
+{{- if (index . "packages") }}
+{{-   if (index . "packages" "rtx" "user") }}
+{{-     if (index . "packages" "rtx" "user" "auto_install") }}
+# set this so that `xtx` and other commands that need to access the GitHub API can use it (helps
+# prevent GitHub rate-limiting based issues)
+rtx_user_packages="{{ .packages.rtx.user.auto_install | join " " }}"
+{{-     end}}
+{{-   end}}
+{{- end}}
+
+
+# Install binaries using rtx
+for rtx in $rtx_user_packages {{ .packages.rtx.auto_install | join " " }}; do
+    ~/bin/rtx install $rtx@latest -y >> $UDI_PKGX_LOG 2>&1
+    ~/bin/rtx use -g $rtx@latest >> $UDI_PKGX_LOG 2>&1
 done
 
 # Deno was already installed by `pkgx` but `deno` must be in a "normal" path for VS Code, etc.

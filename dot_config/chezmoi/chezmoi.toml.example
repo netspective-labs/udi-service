@@ -93,7 +93,7 @@
         port = "8080"
         masterkey = "UDIAAS_ZITADEL_MASTERKEY"
         admin_user = "UDIAAS_ZITADEL_ADMIN_USER"
-        admin_password = "UDIAAS_ZITADEL_PASSWORD"
+        admin_password = "UDIAAS_ZITADEL_ADMIN_PASSWORD"
         fdqn = "UDIAAS_ZITADEL_DOMAIN"
         database = "zitadel_udiaas"
 

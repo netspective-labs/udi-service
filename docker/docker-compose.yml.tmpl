@@ -52,12 +52,12 @@ services:
 
   elasticSearch:
     container_name: udiaas-documentsearch-ee
-    image: 'docker.elastic.co/elasticsearch/elasticsearch:${UDIAAS_ELASTICSEARCH_VERSION}'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:${UDIAAS_EMAILENGINE_ES_VERSION}'
     restart: always
     networks:
       - network
     ports:
-      - '${UDIAAS_ELASTICSEARCH_PORT:-9200}:9200'
+      - '${UDIAAS_EMAILENGINE_ES_PORT:-9200}:9200'
     environment:
       discovery.type: single-node
       CLI_JAVA_OPTS: "-Xms512m -Xmx900m"

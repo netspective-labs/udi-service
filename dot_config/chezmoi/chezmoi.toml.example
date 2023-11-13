@@ -26,7 +26,7 @@
 
     # add [data.udiaas.postgres.*] for generating udiaas postgres docker service:
     [data.udiaas.postgres]
-        version = "15.4"
+        version = "16"
         user = "postgres"
         password = "UDIAAS_POSTGRES_PASSWORD"
         database = "udiaas"

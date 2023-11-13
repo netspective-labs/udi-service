@@ -8,7 +8,7 @@ services:
 {{- if (index . "udiaas" "postgres") }}
   postgres:
     container_name: udiaas-postgres
-    image: 'ghcr.io/udi-service/udiaas:${UDIAAS_POSTGRES_VERSION}'
+    image: 'ghcr.io/udi-service/udiaas-postgres:${UDIAAS_POSTGRES_VERSION}'
     restart: always
     environment:
       - POSTGRES_USER=${UDIAAS_POSTGRES_USER}

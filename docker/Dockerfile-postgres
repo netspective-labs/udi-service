@@ -1,0 +1,86 @@
+# Stage 1: Build Stage
+FROM postgres:16 as build
+
+# Set environment variables
+ENV PG_MAJOR 16
+ENV PGTAP_VERSION v1.1.0
+ENV PGAUDIT_VERSION 1.7.0
+ENV POSTGIS_MAJOR 3
+ENV PLV8_VERSION r3.2
+
+# Set locale
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/*
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+
+# Install necessary build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    software-properties-common git make build-essential ca-certificates curl wget ninja-build postgresql-server-dev-all postgresql-server-dev-${PG_MAJOR}
+
+# Clone necessary repositories and build required extensions
+RUN git clone https://github.com/theory/pgtap.git /tmp/pgtap && \
+    cd /tmp/pgtap && git checkout tags/$PGTAP_VERSION && make install
+
+# Install PL/SH
+RUN apt-get install -y postgresql-${PG_MAJOR}-plsh
+
+# Install PL/PERL
+RUN apt-get install -y postgresql-plperl-$PG_MAJOR
+
+# Install PL/Python3 and related dependencies
+RUN apt-get install -y postgresql-contrib postgresql-plpython3-$PG_MAJOR libpq-dev python3-pip python3-psycopg2 python3-psutil
+
+# Install necessary packages
+RUN apt-get update && apt-get install -yqq --no-install-recommends python3 python3-venv python3-pip python3-setuptools python3-dev python3-distutils
+
+# Install PLV8
+RUN apt-get install -y postgresql-server-dev-${PG_MAJOR} gpp cpp pkg-config apt-transport-https cmake libc++-dev libc++abi-dev libc++1 libtinfo5 libc++abi1
+RUN git clone https://github.com/plv8/plv8.git /tmp/plv8 && \
+    cd /tmp/plv8 && make install
+
+# Install additional PostgreSQL extensions
+RUN apt-get install -y gcc libicu-dev libcurl4-openssl-dev libsqlite3-dev freetds-dev libwww-perl libjson-perl flex libkrb5-dev mariadb-client libmariadb-dev-compat libssl-dev pkg-config clang pgxnclient
+
+
+# Clone and install various PostgreSQL extensions
+RUN git clone https://github.com/okbob/plpgsql_check.git /tmp/plpgsql_check && \
+    cd /tmp/plpgsql_check && make && make install
+RUN git clone https://github.com/pramsey/pgsql-http.git /tmp/pgsql-http && \
+    cd /tmp/pgsql-http && make clean && make install
+#RUN git clone https://github.com/adunstan/file_text_array_fdw.git /tmp/file_text_array_fdw && \
+    #cd /tmp/file_text_array_fdw && git checkout REL_${PG_MAJOR}_STABLE && make USE_PGXS=1 install
+RUN git clone https://github.com/tds-fdw/tds_fdw.git /tmp/tds_fdw && \
+    cd /tmp/tds_fdw && make USE_PGXS=1 install
+RUN git clone https://github.com/michelp/pgjwt.git /tmp/pgjwt && cd /tmp/pgjwt && make install
+RUN pgxn install safeupdate
+RUN git clone https://github.com/aws/pg_tle.git /tmp/pg_tle && cd /tmp/pg_tle && make && make install
+RUN git clone https://github.com/postgresml/postgresml.git /tmp/pgml && cd /tmp/pgml \
+RUN pip3 install -r pgml-extension/requirements.txt
+RUN git clone https://github.com/powa-team/pg_stat_kcache.git /tmp/pg_stat_kcache && cd /tmp/pg_stat_kcache && make && make install
+RUN git clone https://github.com/EnterpriseDB/mysql_fdw.git /tmp/mysql_fdw && cd /tmp/mysql_fdw && make USE_PGXS=1 install
+RUN apt-get install libssl-dev pkg-config clang -y
+
+
+# Stage 2: Production Image
+FROM postgres:16
+
+# Copy built extensions from the previous stage
+COPY --from=build /usr/share/postgresql/16/extension/ /usr/share/postgresql/16/extension/
+COPY --from=build /usr/lib/postgresql/16/lib/ /usr/lib/postgresql/16/lib/
+
+RUN apt-get update && apt-get install -y libcurl4-openssl-dev
+RUN apt-get install -y  libsybdb5 freetds-dev freetds-common
+RUN apt-get install default-libmysqlclient-dev -y
+
+# Set locale
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/*
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+
+# Cleanup unnecessary files and packages
+#RUN apt-get purge -y build-essential &&
+RUN rm -rf /tmp/* && \
+    apt-get clean && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* /var/tmp/* /var/cache/apt/*

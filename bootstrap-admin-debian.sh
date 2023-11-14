@@ -68,4 +68,4 @@ echo ""
 echo "Continue installation by installing non-admin (user) packages:"
 echo "--------------------------------------------------------------"
 echo ""
-echo '$ curl -fsSL https://raw.githubusercontent.com/udi-service/udi-service/master/bootstrap-common.sh | bash'
+echo '$ curl -fsSL https://raw.githubusercontent.com/udi-service/udi-service/main/bootstrap-common.sh | bash'

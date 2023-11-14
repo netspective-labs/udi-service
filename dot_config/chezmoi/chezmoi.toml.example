@@ -29,7 +29,8 @@
         version = "16"
         user = "postgres"
         password = "UDIAAS_POSTGRES_PASSWORD"
-        database = "udiaas"
+        password_encoded = "UDIAAS_POSTGRES_PERCENTAGE_ENCODED_PASSWORD"
+        database = "udiaas_prime"
         port = "5432"
 
     # add [data.sudo_user.*] for creating the ansible var file
@@ -38,18 +39,21 @@
 
     # add [data.udiaas.keycloak.*] for generating udiaas keycloak docker service:
     [data.udiaas.keycloak]
+        version = "22.0.4"
         user = "admin"
         password = "UDIAAS_KEYCLOAK_ADMIN_PASSWORD"
-        database = "keycloak_udiaas"
+        database = "udiaas_keycloak"
         fqdn = "UDIAAS_KEYCLOAK_FQDN"
         port = "8080"
 
     # add [data.udiaas.postgrest.*] for generating udiaas postgREST docker service:
     [data.udiaas.postgrest]
+        version = "v11.2.1"
         port = "3000"
 
     # add [data.udiaas.postgraphile.*] for generating udiaas postGraphile docker service:
     [data.udiaas.postgraphile]
+        version = "4.14.0"
         port = "5000"
         
     # add [data.udiaas.emailengine.*] for generating udiaas emailengine docker service:
@@ -67,7 +71,7 @@
 
     # add [data.udiaas.prometheus.*] for generating udiaas prometheus docker service:
     [data.udiaas.prometheus]
-        version = "2.47.2"
+        version = "v2.47.2"
         port = "9090"
 
     # add [data.udiaas.postresql_exporter.*] for generating udiaas postresql_exporter docker service:
@@ -78,24 +82,24 @@
     # add [data.udiaas.steampipe.*] for generating udiaas steampipe docker service:
     [data.udiaas.steampipe]
         version = "0.21.1"
-        database = "steampipe_udiaas"       
+        database = "udiaas_steampipe"
 
     # add [data.udiaas.openobserve.*] for generating udiaas openobserve docker service:
     [data.udiaas.openobserve]
-        version = "v0.6.4"
+        version = "v0.7.0"
         port = "5080"
         user_email = "UDIAAS_OPENOBSERVE_USER_EMAIL"
         user_password = "UDIAAS_OPENOBSERVE_USER_PASSWORD"
 
     # add [data.udiaas.zitadel.*] for generating udiaas zitadel docker service:
     [data.udiaas.zitadel]
-        version = "v2.40.3"
-        port = "8080"
-        masterkey = "UDIAAS_ZITADEL_MASTERKEY"
+        version = "v2.41.1"
+        port = "8090"
+        masterkey = "UDIAAS_ZITADEL_MASTERKEY_32_CHARACTER"
         admin_user = "UDIAAS_ZITADEL_ADMIN_USER"
         admin_password = "UDIAAS_ZITADEL_ADMIN_PASSWORD"
-        fdqn = "UDIAAS_ZITADEL_DOMAIN"
-        database = "zitadel_udiaas"
+        fqdn = "UDIAAS_ZITADEL_DOMAIN"
+        database = "udiaas_zitadel"
 
     # add [data.udiaas.portainer.*] for generating udiaas portainer docker service:
     [data.udiaas.portainer]

@@ -17,6 +17,7 @@ services:
     networks:
       - network
     volumes:
+      - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
       - udiaas-data:/var/lib/postgresql
     ports:
       - '${UDIAAS_POSTGRES_PORT:-5432}:5432'
@@ -170,7 +171,7 @@ services:
     image: postgrest/postgrest:${UDIAAS_POSTGREST_VERSION}
     restart: always
     environment:
-      - PGRST_DB_URI=postgres://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}
+      - PGRST_DB_URI=postgres://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD_ENCODED}@udiaas-postgres:5432/${UDIAAS_POSTGRES_DATABASE}
     ports:
       - '${UDIAAS_POSTGREST_PORT:-3000}:3000'
     networks:
@@ -240,7 +241,7 @@ services:
     command: 'start-from-init --masterkey "${UDIAAS_ZITADEL_MASTERKEY}" --tlsMode external'
     environment:
       - 'ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME=${UDIAAS_ZITADEL_ADMIN_USER}'
-      - 'ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD=${UDIAAS_ZITADEL_PASSWORD}'
+      - 'ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD=${UDIAAS_ZITADEL_ADMIN_PASSWORD}'
       - 'ZITADEL_EXTERNALDOMAIN=${UDIAAS_ZITADEL_DOMAIN}'
       - 'ZITADEL_EXTERNALPORT=443'
       - 'ZITADEL_EXTERNALSECURE=false'
@@ -262,7 +263,7 @@ services:
 
 {{- if (index . "udiaas") }}
 {{- if (index . "udiaas" "portainer") }}
-  portainer
+  portainer:
     container_name: udiaas-portainer
     image: portainer/portainer:${UDIAAS_PORTAINER_VERSION}
     networks:
@@ -287,12 +288,12 @@ volumes:
   udiaas-data: {}
 {{- end}}
 {{- if (index . "udiaas" "emailengine") }}
-   redis-ee-data: {}
-   elasticSearchEngine-storage: {}
+  redis-ee-data: {}
+  elasticSearchEngine-storage: {}
 {{- end}}
 {{- if (index . "udiaas" "grafana") }}
-   grafana-storage: {}
-   grafana-conf: {}
+  grafana-storage: {}
+  grafana-conf: {}
 {{- end}}
 {{- if (index . "udiaas" "prometheus") }}
   prometheus-storage: {}

@@ -1,0 +1,17 @@
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "keycloak") }}
+CREATE DATABASE {{ .udiaas.keycloak.database | quote }};
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "steampipe") }}
+CREATE DATABASE {{ .udiaas.steampipe.database | quote }};
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "zitadel") }}
+CREATE DATABASE {{ .udiaas.zitadel.database | quote }};
+{{- end}}
+{{- end}}

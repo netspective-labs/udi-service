@@ -18,7 +18,7 @@ services:
       - network
     volumes:
       - ./db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
-      - udiaas-data:/var/lib/postgresql
+      - udiaas-data:/var/lib/postgresql/data
     ports:
       - '${UDIAAS_POSTGRES_PORT:-5432}:5432'
 {{- end}}

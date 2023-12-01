@@ -105,3 +105,8 @@
     [data.udiaas.portainer]
         version = "1.25.0"
         port = "9000"
+
+    # add [data.udiaas.pgbouncer.*] for generating udiaas postgres connection pooler:
+    [data.udiaas.pgbouncer]
+        version = "1.21.0-p2"
+        port = "6432"

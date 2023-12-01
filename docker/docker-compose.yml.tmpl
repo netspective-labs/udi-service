@@ -277,6 +277,25 @@ services:
 {{- end}}
 {{- end}}
 
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "pgbouncer") }}
+  pgbouncer:
+    container_name: udiaas-pgbouncer
+    image: edoburu/pgbouncer:${UDIAAS_PGBOUNCER_VERSION}
+    networks:
+      - network
+    environment:
+      - DB_USER=${UDIAAS_POSTGRES_USER}
+      - DB_PASSWORD=${UDIAAS_POSTGRES_PASSWORD}
+      - DB_HOST=udiaas-postgres
+      - POOL_MODE=transaction
+      - ADMIN_USERS=${UDIAAS_POSTGRES_USER}
+    restart: always
+    ports:
+      - '${UDIAAS_PGBOUNCER_PORT:-6432}:5432'
+{{- end}}
+{{- end}}
+
 networks:
   network:
     external:

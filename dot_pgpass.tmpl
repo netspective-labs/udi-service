@@ -34,7 +34,15 @@
 {{- if (index . "udiaas" "postgres") }}
 {{- if (index . "udiaas" "postgres" "password") }}
 # { id: "UDIAAS_DB", description: "Universal Data Infrastructure", boundary: "Network" }
-localhost:5432:{{ .udiaas.postgres.database }}:{{ .udiaas.postgres.user }}:{{ .udiaas.postgres.password }}
+localhost:{{ .udiaas.postgres.port }}:{{ .udiaas.postgres.database }}:{{ .udiaas.postgres.user }}:{{ .udiaas.postgres.password }}
+{{- end}}
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "pgbouncer") }}
+# { id: "UDIAAS_PGBOUNCER", description: "Universal Data connection pooler", boundary: "Network" }
+localhost:{{ .udiaas.pgbouncer.port }}:{{ .udiaas.postgres.database }}:{{ .udiaas.postgres.user }}:{{ .udiaas.postgres.password }}
 {{- end}}
 {{- end}}
 {{- end}}

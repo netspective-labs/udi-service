@@ -58,10 +58,23 @@ We can then use docker ps to list the UDIaaS Docker containers
 docker ps
 ```
 
-`pgpass` utility can be used to login to the UDIaaS database
+#####  `pgpass` utility can be used to login to the UDIaaS database
+
+- Access UDI PostgreSQL service
 
 ```bash
 fish -c "psql $(pgpass psql-fmt --conn-id='UDIAAS_DB')"
+```
+- Access UDI connection pooler
+
+```bash
+fish -c "psql $(pgpass psql-fmt --conn-id='UDIAAS_PGBOUNCER')"
+```
+
+- Monitor UDI PostgreSQL service activity 
+
+```bash
+fish -c "pg_activity $(pgpass psql-fmt --conn-id='UDIAAS_DB')"
 ```
 
 ## TODO (Roadmap)

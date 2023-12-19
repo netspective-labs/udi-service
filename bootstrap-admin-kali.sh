@@ -21,7 +21,7 @@ sudo apt-get -qq update
 sudo apt-get -y -qq install fish curl git jq pass unzip bzip2 tree make bsdmainutils time gettext-base wget 
 
 # install database clients for accessing remote databases
-sudo apt-get -y -qq install postgresql-client default-mysql-client
+sudo apt-get -y -qq install postgresql-client default-mysql-client pg-activity
 
 # install "build essentials" that are needed to build local binaries
 sudo apt-get -y -qq install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libxml2-dev xz-utils tk-dev libxmlsec1-dev libreadline-dev libffi-dev libbz2-dev liblzma-dev llvm

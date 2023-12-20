@@ -290,6 +290,7 @@ services:
       - DB_HOST=udiaas-postgres
       - POOL_MODE=transaction
       - ADMIN_USERS=${UDIAAS_POSTGRES_USER}
+      - AUTH_TYPE=plain
     restart: always
     ports:
       - '${UDIAAS_PGBOUNCER_PORT:-6432}:5432'

@@ -122,24 +122,6 @@ services:
 {{- end}}
 {{- end}}
 
-{{- if (index . "udiaas") }}
-{{- if (index . "udiaas" "steampipe") }}
-  steampipe:
-    container_name: udiaas-steampipe
-    image: turbot/steampipe:${UDIAAS_STEAMPIPE_VERSION}
-    networks:
-    - network
-    restart: always
-    environment:
-      - AWS_REGION='${AWS_REGION}'
-      - AWS_ACCESS_KEY_ID='${AWS_ACCESS_KEY_ID}'
-      - AWS_SECRET_ACCESS_KEY='${AWS_SECRET_ACCESS_KEY}'
-      - DATABASE_URL=postgresql://${UDIAAS_POSTGRES_USER}:${UDIAAS_POSTGRES_PASSWORD}@udiaas-postgres:5432/${UDIAAS_STEAMPIPE_DATABASE}
-    volumes:
-      - 'steampipe-data:/root/.steampipe/queries'
-    command: ["steampipe", "query", "-c", "/root/.steampipe/queries"]
-{{- end}}
-{{- end}}
 
 {{- if (index . "udiaas") }}
 {{- if (index . "udiaas" "keycloak") }}
@@ -320,9 +302,6 @@ volumes:
 {{- end}}
 {{- if (index . "udiaas" "openobserve") }}
   openobserve-data: {}
-{{- end}}
-{{- if (index . "udiaas" "steampipe") }}
-  steampipe-data: {}
 {{- end}}
 {{- if (index . "udiaas" "portainer") }}
   portainer-data: {}

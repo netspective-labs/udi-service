@@ -22,3 +22,6 @@
 
 [packages.rtx]
     auto_install = ["usql", "github-cli", "gojq"]
+
+[packages.steampipe]
+    plugin_install = ["digitalocean", "aws", "theapsgroup/keycloak", "theapsgroup/gitlab"]

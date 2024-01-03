@@ -71,6 +71,26 @@ for rtx in $rtx_user_packages {{ .packages.rtx.auto_install | join " " }}; do
     ~/bin/rtx use -g $rtx@latest >> $UDI_PKGX_LOG 2>&1
 done
 
+
+steampipe_user_packages=""
+{{- if (index . "packages") }}
+{{-   if (index . "packages" "steampipe" "user") }}
+{{-     if (index . "packages" "steampipe" "user" "plugin_install") }}
+# set this so that `xtx` and other commands that need to access the GitHub API can use it (helps
+# prevent GitHub rate-limiting based issues)
+steampipe_user_packages="{{ .packages.steampipe.user.plugin_install | join " " }}"
+{{-     end}}
+{{-   end}}
+{{- end}}
+
+
+# Install binaries using steampipe
+for steampipe in $steampipe_user_packages {{ .packages.steampipe.plugin_install | join " " }}; do
+    ~/bin/steampipe plugin install "$plugin" -y >> $UDI_PKGX_LOG 2>&1
+    ~/bin/steampipe plugin install "$plugin" >> $UDI_PKGX_LOG 2>&1
+done
+
+
 # Deno was already installed by `pkgx` but `deno` must be in a "normal" path for VS Code, etc.
 rm -f $HOME/bin/deno && ln -s $HOME/.local/bin/deno $HOME/bin/deno    
 

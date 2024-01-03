@@ -125,3 +125,4 @@ RUN rm -rf /tmp/* && \
 
 RUN wget -O - https://install.pgx.sh | sh
 RUN pgxman install pg_graphql -y
+RUN pgxman install pg_later -y

@@ -12,3 +12,4 @@ oh-my-posh init fish --config ~/.config/oh-my-posh/udi-service-typical.omp.json 
 
 direnv hook fish | source
 zoxide init fish | source
+~/.local/bin/mise activate fish | source

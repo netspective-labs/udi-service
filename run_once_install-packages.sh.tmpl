@@ -53,22 +53,22 @@ for pkg in $pkgx_user_packages {{ .packages.pkgx.auto_install | join " " }}; do
     ~/bin/pkgx install $pkg@latest >> $UDI_PKGX_LOG 2>&1
 done
 
-rtx_user_packages=""
+mise_user_packages=""
 {{- if (index . "packages") }}
-{{-   if (index . "packages" "rtx" "user") }}
-{{-     if (index . "packages" "rtx" "user" "auto_install") }}
-# set this so that `xtx` and other commands that need to access the GitHub API can use it (helps
+{{-   if (index . "packages" "mise" "user") }}
+{{-     if (index . "packages" "mise" "user" "auto_install") }}
+# set this so that `mise` and other commands that need to access the GitHub API can use it (helps
 # prevent GitHub rate-limiting based issues)
-rtx_user_packages="{{ .packages.rtx.user.auto_install | join " " }}"
+mise_user_packages="{{ .packages.mise.user.auto_install | join " " }}"
 {{-     end}}
 {{-   end}}
 {{- end}}
 
 
-# Install binaries using rtx
-for rtx in $rtx_user_packages {{ .packages.rtx.auto_install | join " " }}; do
-    ~/bin/rtx install $rtx@latest -y >> $UDI_PKGX_LOG 2>&1
-    ~/bin/rtx use -g $rtx@latest >> $UDI_PKGX_LOG 2>&1
+# Install binaries using mise
+for mise in $mise_user_packages {{ .packages.mise.auto_install | join " " }}; do
+    ~/bin/mise install $mise@latest -y >> $UDI_PKGX_LOG 2>&1
+    ~/bin/mise use -g $mise@latest >> $UDI_PKGX_LOG 2>&1
 done
 
 

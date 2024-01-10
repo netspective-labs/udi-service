@@ -79,10 +79,14 @@
         version = "0.15.0"
         port = "9187"
 
-    # add [data.udiaas.steampipe.*] for generating udiaas steampipe docker service:
-    [data.udiaas.steampipe]
-        version = "0.21.1"
-        database = "udiaas_steampipe"
+    # add [data.udiaas.aws.*] for generating udiaas aws access credentials:
+    [data.udiaas.aws]
+        access_key = "AWS_IAM_IDENTITY_ACCESS_KEY"
+        secret_key = "AWS_IAM_IDENTITY_SECRET_KEY"
+    
+    # add [data.udiaas.digitalocean.*] for generating udiaas DO access credential:
+    [data.udiaas.digitalocean]
+        access_token = "DIGITALOCEAN_ACCESS_TOKEN"  
 
     # add [data.udiaas.openobserve.*] for generating udiaas openobserve docker service:
     [data.udiaas.openobserve]

@@ -86,8 +86,8 @@ steampipe_user_packages="{{ .packages.steampipe.user.plugin_install | join " " }
 
 # Install binaries using steampipe
 for steampipe in $steampipe_user_packages {{ .packages.steampipe.plugin_install | join " " }}; do
-    ~/bin/steampipe plugin install "$plugin" -y >> $UDI_PKGX_LOG 2>&1
-    ~/bin/steampipe plugin install "$plugin" >> $UDI_PKGX_LOG 2>&1
+    ~/bin/pkgx steampipe plugin install "$plugin" -y >> $UDI_PKGX_LOG 2>&1
+    ~/bin/pkgx steampipe plugin install "$plugin" >> $UDI_PKGX_LOG 2>&1
 done
 
 

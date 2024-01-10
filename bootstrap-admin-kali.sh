@@ -44,9 +44,6 @@ OSQ_DEB_FILE=osquery_${OSQ_VERSION}-1.linux_amd64.deb
 sudo curl -fsSL -o $OSQ_APT_CACHE/$OSQ_DEB_FILE https://pkg.osquery.io/deb/$OSQ_DEB_FILE
 sudo dpkg -i $OSQ_APT_CACHE/$OSQ_DEB_FILE
 
-# Install steampipe
-sudo /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/turbot/steampipe/main/install.sh)"
-
 # Set Fish as the default shell
 sudo usermod -s /usr/bin/fish $USER
 

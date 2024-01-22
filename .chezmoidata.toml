@@ -18,7 +18,7 @@
 [packages.pkgx]
     # see https://pkgx.dev/pkgs/ for existing packages`
     # if you have a special package to install that not everyone else might need, define those in ~/.config/chezmoi/chezmoi.toml
-    auto_install = ["bun", "dasel", "deno", "exa", "fzf", "glab", "opa", "rclone", "sqlite3", "zoxide", "direnv", "steampipe", "cnquery"]
+    auto_install = ["bun", "dasel", "deno", "exa", "fzf", "glab", "opa", "rclone", "sqlite3", "zoxide", "direnv", "steampipe", "cnquery", "aws/cli", "grype"]
 
 [packages.mise]
     auto_install = ["usql", "github-cli", "gojq"]

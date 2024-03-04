@@ -33,7 +33,7 @@ RUN git clone https://github.com/theory/pgtap.git /tmp/pgtap && \
 
 # Install PL/Python3 and related dependencies
 ## procedural language allows PostgreSQL functions and procedures to be written in the Python language ##
-RUN apt-get install -y postgresql-contrib postgresql-plpython3-$PG_MAJOR libpq-dev python3-pip python3-psycopg2 python3-psutil
+RUN apt-get install -y postgresql-contrib postgresql-plpython3-$PG_MAJOR libpq-dev python3-pip python3-psycopg2 python3-psutil unzip
 
 # Install necessary packages
 RUN apt-get update && apt-get install -yqq --no-install-recommends python3 python3-venv python3-pip python3-setuptools python3-dev python3-distutils
@@ -91,6 +91,15 @@ RUN git clone https://github.com/powa-team/pg_qualstats.git /tmp/pg_qualstats &&
 ## Sampling based statistics of wait events ##
 RUN git clone https://github.com/postgrespro/pg_wait_sampling.git /tmp/pg_wait_sampling && cd /tmp/pg_wait_sampling && make USE_PGXS=1 install
 
+RUN git clone https://github.com/alitrack/duckdb_fdw /tmp/duckdb_fdw
+WORKDIR /tmp/duckdb_fdw
+RUN wget -c https://github.com/duckdb/duckdb/releases/download/v0.10.0/libduckdb-linux-amd64.zip && \
+    unzip -o libduckdb-linux-amd64.zip && \
+    cp libduckdb.so $(pg_config --libdir)
+RUN make USE_PGXS=1
+RUN make install USE_PGXS=1
+
+
 # Stage 2: Production Image
 FROM postgres:16
 
@@ -98,23 +107,31 @@ FROM postgres:16
 COPY --from=build /var/lib/postgresql/ /var/lib/postgresql/
 COPY --from=build /usr/share/postgresql/16/extension/ /usr/share/postgresql/16/extension/
 COPY --from=build /usr/lib/postgresql/16/lib/ /usr/lib/postgresql/16/lib/
+COPY --from=build /usr/lib/x86_64-linux-gnu/libduckdb.so /usr/lib/x86_64-linux-gnu/
 
 RUN echo "shared_preload_libraries = 'pg_tle, pg_stat_statements, pg_stat_kcache, pg_wait_sampling, pg_qualstats'" >> /usr/share/postgresql/postgresql.conf.sample
 
 
-RUN apt-get update && apt-get install -y libcurl4-openssl-dev
+RUN apt-get update && apt-get install -y libcurl4-openssl-dev  python3 python3-pip
 RUN apt-get install -y  libsybdb5 freetds-dev freetds-common
-RUN apt-get install default-libmysqlclient-dev -y
-RUN apt-get update && apt-get install -y postgresql-16-pg-stat-kcache
+RUN apt-get install default-libmysqlclient-dev  -y
+RUN apt-get update && apt-get install -y postgresql-16-pg-stat-kcache wget unzip
+
+#Install duckdbcli
+RUN wget https://github.com/duckdb/duckdb/releases/download/v0.10.0/duckdb_cli-linux-amd64.zip
+RUN unzip duckdb_cli-linux-amd64.zip
+
 # Set locale
 RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/*
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
+RUN rm /usr/lib/python3.11/EXTERNALLY-MANAGED
 
 RUN echo "pg_stat_statements.track = all" >> /usr/share/postgresql/postgresql.conf.sample
 RUN echo "pg_stat_statements.max = 10000" >> /usr/share/postgresql/postgresql.conf.sample
 
 RUN apt-get update && apt-get install -y curl wget
+
 
 # Cleanup unnecessary files and packages
 #RUN apt-get purge -y build-essential &&
@@ -126,3 +143,6 @@ RUN rm -rf /tmp/* && \
 RUN wget -O - https://install.pgx.sh | sh
 RUN pgxman install pg_graphql -y
 RUN pgxman install pg_later -y
+
+RUN pip install python-keycloak
+RUN pip install cryptography

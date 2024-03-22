@@ -114,3 +114,23 @@
     [data.udiaas.pgbouncer]
         version = "1.21.0-p2"
         port = "6432"
+    
+    # add [data.udiaas.node-exporter.*] for generating udiaas node-exporter docker service:
+    [data.udiaas.node-exporter]
+        version = "v1.7.0"
+        port = "9100"
+		
+    # add [data.udiaas.alert-manager.*] for generating udiaas alert-manager docker service:
+    [data.udiaas.alert-manager]
+        version = "v0.27.0"
+        port = "9093"
+		
+    # add [data.udiaas.loki.*] for generating udiaas loki docker service:
+    [data.udiaas.loki]
+        version = "main-d54e087"
+        port = "3100"
+		
+    # add [data.udiaas.promtail.*] for generating udiaas promtail docker service:
+    [data.udiaas.promtail]
+        version = "main-d54e087"
+		

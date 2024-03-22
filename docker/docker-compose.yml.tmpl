@@ -279,6 +279,59 @@ services:
 {{- end}}
 {{- end}}
 
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "node-exporter") }}
+  node-exporter:
+    container_name: udiaas-node-exporter
+    image: prom/node-exporter:${UDIAAS_NODEEXPORTER_VERSION}
+    networks:
+      - network
+    restart: always
+    ports:
+      - '${UDIAAS_NODEEXPORTER_PORT:-9100}:9100'
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "alert-manager") }}
+  alert-manager:
+    container_name: udiaas-alert-manager
+    image: prom/alertmanager:${UDIAAS_ALERT-MANAGER_VERSION}
+    networks:
+      - network
+    restart: always
+    ports:
+      - '${UDIAAS_ALERT-MANAGER_PORT:-9093}:9093'
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "loki") }}
+  loki:
+    container_name: udiaas-loki
+    image: grafana/loki::${UDIAAS_LOKI_VERSION}
+    networks:
+      - network
+    command: -config.file=/etc/loki/local-config.yaml
+	restart: always
+    ports:
+      - '${UDIAAS_LOKI_PORT:-3100}:3100'
+{{- end}}
+{{- end}}
+
+{{- if (index . "udiaas") }}
+{{- if (index . "udiaas" "promtail") }}
+  promtail:
+    container_name: udiaas-promtail
+    image: grafana/promtail:${UDIAAS_PROMTAIL_VERSION}
+    networks:
+      - network
+    command: -config.file=/etc/promtail/config.yml
+	restart: always
+{{- end}}
+{{- end}}
+
+
 networks:
   network:
     external:
